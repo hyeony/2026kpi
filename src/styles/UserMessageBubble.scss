@@ -1,0 +1,45 @@
+.user-message-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.user-message-bubble {
+  max-width: 70%;
+  background-color: #3b82f6;
+  color: #fff;
+  border-radius: 18px 4px 18px 18px;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.user-message-bubble__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.user-message-bubble__button {
+  border: none;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  color: #e5e7eb;
+}
+
+.user-message-bubble__button--copy {
+  background: rgba(15, 23, 42, 0.25);
+}
+
+.user-message-bubble__button--edit {
+  background: rgba(15, 23, 42, 0.15);
+}
+
+.user-message-bubble__text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
