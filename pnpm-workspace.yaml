@@ -1,0 +1,4 @@
+packages:
+  - 'playground'
+  - 'apps/core'
+  - 'apps/theme'
