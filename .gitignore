@@ -3,3 +3,7 @@ dist
 *.local
 .DS_Store
 *.log
+
+# Turborepo
+.turbo
+node_modules/.cache/turbo

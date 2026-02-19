@@ -1,7 +1,8 @@
 # test2 – 대안 세팅 (tsup + watch)
 
-- **기본(namespace='ds')**: 빌드타임 CSS(`dist/theme.css`) 사용 → 깜빡임 없음
-- **커스텀 namespace**: 런타임 주입 (깜빡임 가능)
+- **기본 namespace(BUILD_PREFIX)**: CSS import 없이, 사용 중인 컴포넌트 마운트 시 해당 스타일만 `<head>`에 지연 주입
+- **커스텀 namespace**: ThemeProvider에서 해당 namespace 스타일 일괄 주입
+- **빌드**: Turborepo 사용 (`turbo run build`), BUILD_PREFIX로 버전별 클래스 격리 가능
 
 ## 한 줄 요약
 
@@ -48,8 +49,14 @@ pnpm typecheck  # 전체 타입체크 (tsc --noEmit)
 pnpm build      # 전체 빌드
 ```
 
-- **dev**: core/theme 수정 시 자동 재빌드되고, playground가 새 dist를 참조합니다.
-- **concurrently**로 `core dev`, `theme dev`, `playground dev`를 한 번에 띄웁니다.
+- **dev**: Turborepo로 core/theme 먼저 빌드 후, 세 패키지 dev를 동시 실행.
+- **스타일**: 기본 namespace는 CSS 파일 import 없이, Button/Prompt 등 사용 시 해당 컴포넌트 스타일만 `<head>`에 주입됨.
+
+### Windows에서 개발하기
+
+- **Node**: 20.8.1 또는 20 LTS ( [nodejs.org](https://nodejs.org/) 또는 [nvm-windows](https://github.com/coreybutler/nvm-windows) 권장 )
+- **실행**: 터미널은 **PowerShell** 또는 **CMD** 모두 사용 가능. 위와 동일하게 `pnpm install` 후 `pnpm dev` 실행하면 됩니다.
+- **줄바꿈**: 저장소에 `.gitattributes`가 있어 LF로 통일됩니다. Windows에서 Git `core.autocrlf` 기본값이면 커밋 시 자동으로 LF로 저장됩니다.
 
 ## 패키지 배포 전 체크리스트
 
@@ -61,19 +68,32 @@ pnpm build      # 전체 빌드
 - [ ] **CSS 주입 모듈 sideEffects 처리**: theme 패키지가 스타일 주입을 하므로 `package.json`에 `"sideEffects": true` 또는 `["dist/index.js"]` 등 지정
 - [ ] **exports/entrypoints**: ESM/CJS 소비자에서 `import`/`require` 정상 동작하는지 확인
 
-## 스타일 적용 (깜빡임 방지)
+## 스타일 적용 (On-demand / Lazy)
 
-앱 엔트리 **최상단**에 theme CSS를 import하세요:
+- **기본 namespace**: CSS 파일 import 없이 `ThemeProvider`와 컴포넌트만 사용하면, 해당 컴포넌트가 마운트될 때 해당 스타일만 `<head>`에 주입됩니다.
+- **선택적 사전 로드**: 깜빡임을 줄이고 싶다면 `import '@test2/theme/theme.css'`를 엔트리 최상단에 두면 됩니다 (BUILD_PREFIX와 동일한 namespace일 때만 적용).
 
 ```tsx
-import '@test2/theme/theme.css';  // 반드시 다른 import보다 먼저
 import './index.css';
-import { ThemeProvider } from '@test2/theme';
-// ...
+import { ThemeProvider, Button, Prompt } from '@test2/theme';
+
+// Button/Prompt 사용 시 해당 스타일만 자동 주입
+<ThemeProvider>
+  <Button>클릭</Button>
+</ThemeProvider>
 ```
 
-- `dist/theme.css`: theme 빌드 시 자동 생성 (namespace='ds' 고정)
-- CSS가 JS 실행 전에 로드되어 깜빡임 없음
+## BUILD_PREFIX (빌드 타임 prefix)
+
+버전별 클래스 격리 또는 배포 prefix 변경 시 환경변수로 지정합니다:
+
+```bash
+# 기본값 'ds'. 배포 시 예: myui1, myui2
+BUILD_PREFIX=myui1 pnpm build
+```
+
+- core/theme 빌드 시 `BUILD_PREFIX`가 클래스명과 `dist/theme.css` 선택자에 반영됩니다.
+- 한 화면에 구/신 버전 라이브러리가 공존해도 prefix를 다르게 빌드하면 스타일 충돌이 나지 않습니다.
 
 ## 구조
 

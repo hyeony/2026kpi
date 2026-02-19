@@ -14,7 +14,7 @@ export function getPromptStyles(namespace: string): string {
   width: 100%;
   max-width: 640px;
 }
-.${prompt} .${prompt}-inner {
+.${prompt}-inner {
   display: flex;
   align-items: center;
   flex: 1;
@@ -25,11 +25,11 @@ export function getPromptStyles(namespace: string): string {
   border-radius: ${tokens.radiusMd};
   transition: border-color 0.15s, box-shadow 0.15s;
 }
-.${prompt} .${prompt}-inner:focus-within {
+.${prompt}-inner:focus-within {
   border-color: ${tokens.colorPrimary};
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
-.${prompt} .${prompt}-file-trigger.${btn} {
+.${prompt}-file-trigger.${btn} {
   flex-shrink: 0;
   padding: 0.375rem 0.75rem;
   font-size: 0.8125rem;
@@ -40,14 +40,14 @@ export function getPromptStyles(namespace: string): string {
   color: ${tokens.colorTextMuted};
   cursor: pointer;
 }
-.${prompt} .${prompt}-file-trigger.${btn}:hover {
+.${prompt}-file-trigger.${btn}:hover {
   background-color: ${tokens.colorBorderHover};
 }
-.${prompt} .${prompt}-file-trigger.${btn}:disabled {
+.${prompt}-file-trigger.${btn}:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-.${prompt} .${prompt}-input {
+.${prompt}-input {
   flex: 1;
   min-width: 0;
   margin: 0;
@@ -59,14 +59,14 @@ export function getPromptStyles(namespace: string): string {
   border: none;
   outline: none;
 }
-.${prompt} .${prompt}-input::placeholder {
+.${prompt}-input::placeholder {
   color: ${tokens.colorPlaceholder};
 }
-.${prompt} .${prompt}-input:disabled {
+.${prompt}-input:disabled {
   cursor: not-allowed;
   opacity: 0.7;
 }
-.${prompt} .${prompt}-copy.${btn} {
+.${prompt}-copy.${btn} {
   flex-shrink: 0;
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
@@ -77,11 +77,11 @@ export function getPromptStyles(namespace: string): string {
   color: ${tokens.colorTextMuted};
   cursor: pointer;
 }
-.${prompt} .${prompt}-copy.${btn}:hover {
+.${prompt}-copy.${btn}:hover {
   background-color: ${tokens.colorBgHover};
   border-color: ${tokens.colorBorderHover};
 }
-.${prompt} .${prompt}-copy.${btn}:disabled {
+.${prompt}-copy.${btn}:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

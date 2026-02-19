@@ -1,4 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react';
+import { DEFAULT_NAMESPACE } from '@test2/core';
 import { getThemeStyles } from './styles';
 
 export interface ThemeConfig {
@@ -6,8 +7,6 @@ export interface ThemeConfig {
 }
 
 const ThemeContext = createContext<ThemeConfig | null>(null);
-
-const DEFAULT_NAMESPACE = 'ds';
 
 export function useTheme(): ThemeConfig {
   const ctx = useContext(ThemeContext);
@@ -20,8 +19,8 @@ export interface ThemeProviderProps {
 }
 
 /**
- * namespace='ds': 빌드타임 CSS(theme.css) 사용. import '@test2/theme/theme.css' 필수.
- * 커스텀 namespace: 런타임 주입 (깜빡임 가능).
+ * 기본 namespace(BUILD_PREFIX): 스타일은 사용 중인 컴포넌트 마운트 시 <head>에 지연 주입 (CSS import 불필요).
+ * 커스텀 namespace: 여기서 해당 namespace 전체 스타일을 한 번에 주입.
  */
 export function ThemeProvider({ namespace = DEFAULT_NAMESPACE, children }: ThemeProviderProps) {
   const isDefaultNs = namespace === DEFAULT_NAMESPACE;

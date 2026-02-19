@@ -1,4 +1,3 @@
-import '@test2/theme/theme.css';
 import './index.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

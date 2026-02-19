@@ -1,4 +1,8 @@
-const DEFAULT_NAMESPACE = 'ds';
+/**
+ * 빌드 시점에 고정되는 prefix (환경변수 BUILD_PREFIX).
+ * tsup define으로 치환되며, 미설정 시 'ds'.
+ */
+export const DEFAULT_NAMESPACE = process.env.BUILD_PREFIX ?? 'ds';
 
 /**
  * 컴포넌트 루트에 붙일 클래스 접두사를 만듭니다.

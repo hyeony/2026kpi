@@ -5,15 +5,15 @@
   "type": "module",
   "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "build": "pnpm run build:core && pnpm run build:theme && pnpm --filter playground build",
-    "build:core": "pnpm --filter @test2/core build",
-    "build:theme": "pnpm --filter @test2/theme build",
-    "dev": "pnpm run build:core && pnpm run build:theme && pnpm run dev:all",
-    "dev:all": "concurrently \"pnpm --filter @test2/core dev\" \"pnpm --filter @test2/theme dev\" \"pnpm --filter playground dev\"",
-    "typecheck": "pnpm -r typecheck",
-    "lint": "pnpm -r run lint"
+    "build": "turbo run build",
+    "build:core": "turbo run build --filter=@test2/core",
+    "build:theme": "turbo run build --filter=@test2/theme",
+    "dev": "turbo run build --filter=@test2/core --filter=@test2/theme && turbo run dev",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "turbo": "^2.3.0"
   }
 }

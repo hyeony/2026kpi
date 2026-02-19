@@ -1,0 +1,5 @@
+# Line endings: LF in repo so Windows and Unix are consistent
+* text=auto eol=lf
+
+# Windows batch scripts keep CRLF if added later
+*.{cmd,bat} text eol=crlf

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 const components = [
   { path: '/button', name: 'Button', description: '버튼 컴포넌트' },
   { path: '/prompt', name: 'Prompt', description: 'AI 프롬프트 입력 (input + 파일추가 + 복사)' },
+  { path: '/bubble-message', name: 'BubbleMessage', description: 'Agent(좌) / User(우) 말풍선 (텍스트·이미지·Agent 블록)' },
 ];
 
 export function IndexPage() {
