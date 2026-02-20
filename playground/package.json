@@ -11,6 +11,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@test2/core": "workspace:*",
     "@test2/theme": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

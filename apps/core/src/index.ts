@@ -1,8 +1,8 @@
 export { prefixCls, createPrefixCls, DEFAULT_NAMESPACE } from './prefixCls';
 export { Button } from './Button';
 export type { ButtonProps } from './Button';
-export { Prompt } from './Prompt';
-export type { PromptProps } from './Prompt';
+export { Prompt, PromptBase } from './Prompt';
+export type { PromptProps, PromptBaseProps } from './Prompt';
 export {
   BubbleMessage,
   AgentMessage,
