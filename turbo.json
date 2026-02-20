@@ -1,0 +1,19 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["VITE_BUILD_PREFIX"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "vite.config.ts", "tsconfig.json", ".env"],
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "dependsOn": [],
+      "persistent": true,
+      "cache": false
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

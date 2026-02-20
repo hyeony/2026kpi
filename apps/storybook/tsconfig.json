@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@hnineds/core": ["../../packages/core/src/index.ts"],
+      "@hnineds/styles": ["../../packages/styles/src/index.ts"]
+    }
+  },
+  "include": ["src", ".storybook"],
+  "exclude": ["node_modules", "storybook-static"]
+}
