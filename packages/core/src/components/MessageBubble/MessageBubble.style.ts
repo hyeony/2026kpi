@@ -34,11 +34,64 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       boxSizing: "border-box",
     },
     [`.${b}-content-user`]: {
-      backgroundColor: "#e0d8ed",
+      backgroundColor: "#f8f7fa",
       borderRadius: "16px 16px 4px 16px",
     },
     [`.${b}-content-agent`]: {
       borderRadius: "12px",
+    },
+    [`.${b}-user-img-wrap`]: {
+      marginBottom: "8px",
+    },
+    [`.${b}-user-img-wrap:last-child`]: {
+      marginBottom: 0,
+    },
+    [`.${b}-user-img-single`]: {
+      display: "block",
+      maxWidth: "100%",
+      objectFit: "contain",
+      borderRadius: "8px",
+      verticalAlign: "top",
+    },
+    [`.${b}-user-img-single-square`]: {
+      width: "200px",
+      height: "200px",
+      objectFit: "cover",
+    },
+    [`.${b}-user-img-single-horizon`]: {
+      maxWidth: "250px",
+      maxHeight: "200px",
+    },
+    [`.${b}-user-img-single-portrait`]: {
+      width: "200px",
+      maxHeight: "250px",
+    },
+    [`.${b}-user-img-grid`]: {
+      display: "grid",
+      gap: "4px",
+      gridAutoFlow: "dense",
+    },
+    [`.${b}-user-img-grid-2`]: {
+      gridTemplateColumns: "repeat(2, 120px)",
+    },
+    [`.${b}-user-img-grid-3`]: {
+      gridTemplateColumns: "repeat(3, 120px)",
+    },
+    [`.${b}-user-img-grid-4`]: {
+      gridTemplateColumns: "repeat(2, 120px)",
+    },
+    [`.${b}-user-img-grid-5`]: {
+      gridTemplateColumns: "repeat(3, 120px)",
+    },
+    [`.${b}-user-img-grid-6up`]: {
+      gridTemplateColumns: "repeat(3, 120px)",
+    },
+    [`.${b}-user-img-grid-item`]: {
+      width: "120px",
+      height: "120px",
+      objectFit: "cover",
+      borderRadius: "6px",
+      display: "block",
     },
     [`.${b}-actions`]: {
       display: "flex",

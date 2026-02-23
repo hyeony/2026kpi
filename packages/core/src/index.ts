@@ -33,6 +33,7 @@ export { MessageBlock, UserMessageBubble, AgentMessageBubble } from "./component
 export type {
   MessageBlockProps,
   MessageBubbleAlign,
+  UserMessageImage,
   UserMessageBubbleProps,
   AgentMessageBubbleProps,
 } from "./components/MessageBubble/MessageBubble.types";

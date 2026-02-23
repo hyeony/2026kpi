@@ -4,6 +4,7 @@ export { AgentMessageBubble } from "./AgentMessageBubble";
 export type {
   MessageBlockProps,
   MessageBubbleAlign,
+  UserMessageImage,
   UserMessageBubbleProps,
   AgentMessageBubbleProps,
 } from "./MessageBubble.types";
