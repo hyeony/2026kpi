@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { ButtonPage } from "./pages/ButtonPage";
 import { PromptInputPage } from "./pages/PromptInputPage";
+import { MessageBubblePage } from "./pages/MessageBubblePage";
 
 // --- 타입 ---
-type PageId = "button" | "prompt-input";
+type PageId = "button" | "prompt-input" | "message-bubble";
 
 interface NavItem {
   id: PageId;
@@ -13,12 +14,14 @@ interface NavItem {
 
 // --- 네비게이션 목록: 컴포넌트 추가 시 여기에 한 줄만 추가 ---
 const NAV_ITEMS: NavItem[] = [
+  { id: "message-bubble", label: "MessageBubble", description: "User/Agent 말풍선 · 액션" },
   { id: "button", label: "Button", description: "variant · size · icon" },
   { id: "prompt-input", label: "PromptInput", description: "AI 입력창 · size · actions" },
 ];
 
 // --- 페이지 라우팅: 컴포넌트 추가 시 여기에 한 줄만 추가 ---
 const PAGES: Record<PageId, React.ComponentType> = {
+  "message-bubble": MessageBubblePage,
   "button": ButtonPage,
   "prompt-input": PromptInputPage,
 };
@@ -58,7 +61,7 @@ const navDescStyle: React.CSSProperties = {
 };
 
 export function App() {
-  const [activePage, setActivePage] = useState<PageId>("button");
+  const [activePage, setActivePage] = useState<PageId>("message-bubble");
   const PageComponent = PAGES[activePage];
 
   return (

@@ -11,6 +11,7 @@ export const COMPONENT_NAMES = {
   Button: "btn",
   Input: "input",
   PromptInput: "prompt",
+  MessageBubble: "message-bubble",
 } as const;
 
 export type ComponentNameKey = keyof typeof COMPONENT_NAMES;

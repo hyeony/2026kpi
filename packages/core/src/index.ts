@@ -29,3 +29,10 @@ export { Button } from "./components/Button/Button";
 export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/Button/Button.types";
 export { PromptInput } from "./components/PromptInput/PromptInput";
 export type { PromptInputProps, PromptInputSize } from "./components/PromptInput/PromptInput.types";
+export { MessageBlock, UserMessageBubble, AgentMessageBubble } from "./components/MessageBubble";
+export type {
+  MessageBlockProps,
+  MessageBubbleAlign,
+  UserMessageBubbleProps,
+  AgentMessageBubbleProps,
+} from "./components/MessageBubble/MessageBubble.types";
