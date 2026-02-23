@@ -2,3 +2,9 @@ packages/core/dist
 packages/styles/dist
 apps/playground-styles/dist
 apps/playground-core/dist
+apps/core/dist/
+apps/core/node_modules/
+apps/theme/dist/
+apps/theme/node_modules/
+node_modules/
+playground/dist/
