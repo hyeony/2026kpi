@@ -14,7 +14,14 @@ export { globalStyleRegistry, registerGlobalStyleOverride } from "./styleRegistr
 export { BUILD_PREFIX, getClass } from "./prefix";
 export { COMPONENT_NAMES } from "./componentNames";
 export type { ComponentNameKey } from "./componentNames";
-export { injectStyle, releaseStyle, removeStyle, removeAllStyles } from "./utils/injectStyle";
+export {
+  injectStyle,
+  releaseStyle,
+  removeStyle,
+  removeAllStyles,
+  cssObjectToString,
+} from "./utils/injectStyle";
+export type { CssObject, CssAtRuleBlock } from "./utils/injectStyle";
 export { cn } from "./utils/cn";
 
 // Components

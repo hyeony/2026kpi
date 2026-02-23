@@ -19,6 +19,8 @@ export type {
   ButtonVariant,
   ButtonSize,
   PromptInputSize,
+  CssObject,
+  CssAtRuleBlock,
 } from "@hnineds/core";
 
 // 스타일 override된 컴포넌트들 re-export

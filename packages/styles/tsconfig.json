@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@hnineds/core": ["../../packages/core/src/index.ts"],
+      "@hnineds/core": ["../../packages/core/dist/index.d.ts"],
       "@hnineds/styles": ["./src/index.ts"]
     }
   },

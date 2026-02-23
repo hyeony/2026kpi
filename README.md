@@ -2,7 +2,7 @@
 
 React 컴포넌트 라이브러리 모노레포.
 
-**Zero CSS Import** & **Style Disconnection by Prefix** 철학을 기반으로 설계되었습니다.
+**Zero CSS Import** 철학을 기반으로 설계되었습니다.
 CSS 파일을 별도로 import하지 않아도 컴포넌트가 마운트되는 시점에 스타일이 `<head>`에 자동 주입됩니다.
 
 ---
@@ -138,6 +138,16 @@ packages/styles/dist/
 
 ```bash
 pnpm clean
+```
+
+### 빌드 및 배포
+
+```bash
+# 1. 빌드 먼저
+pnpm --filter @hnineds/styles build
+
+# 2. publish (빌드된 dist + CHANGELOG.md만 업로드됨 — package.json "files" 기준)
+pnpm --filter @hnineds/styles publish --access public
 ```
 
 ---

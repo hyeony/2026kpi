@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
         insertTypesEntry: true,
         include: ["src"],
         outDir: "dist",
+        rollupTypes: true,
       }),
     ],
     define: {
@@ -27,13 +28,12 @@ export default defineConfig(({ mode }) => {
         fileName: (format) => (format === "es" ? "index.js" : "index.cjs"),
       },
       rollupOptions: {
-        // @hnineds/core도 external로 처리 (배포 시 별도 설치)
-        external: ["react", "react-dom", "react/jsx-runtime", "@hnineds/core"],
+        // @hnineds/core는 번들에 포함 (standalone 패키지)
+        external: ["react", "react-dom", "react/jsx-runtime"],
         output: {
           globals: {
             react: "React",
             "react-dom": "ReactDOM",
-            "@hnineds/core": "HnineDSCore",
           },
         },
       },
