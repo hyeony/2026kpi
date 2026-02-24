@@ -67,7 +67,7 @@ const navDescStyle: React.CSSProperties = {
 };
 
 export function App() {
-  const [activePage, setActivePage] = useState<PageId>("button");
+  const [activePage, setActivePage] = useState<PageId>("message-bubble");
   const PageComponent = PAGES[activePage];
 
   return (

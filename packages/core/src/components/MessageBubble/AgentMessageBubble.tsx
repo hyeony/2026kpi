@@ -26,32 +26,32 @@ export function AgentMessageBubble({
 }: AgentMessageBubbleProps) {
   const { prefix } = useContext(HnineDSContext);
   const p = COMPONENT_NAMES.MessageBubble;
-  const btnCls = getClass(prefix, p, "action-btn");
+  const cls = (modifier?: string) => getClass(prefix, p, modifier);
 
   const actions = (
     <>
       {showCopy && (
-        <button type="button" className={btnCls} onClick={onCopy ?? (() => {})} aria-label="복사">
+        <button type="button" className={cls("action-btn")} onClick={onCopy ?? (() => {})} aria-label="복사">
           <CopyIcon />
         </button>
       )}
       {showLike && (
-        <button type="button" className={btnCls} onClick={onLike ?? (() => {})} aria-label="좋아요">
+        <button type="button" className={cls("action-btn")} onClick={onLike ?? (() => {})} aria-label="좋아요">
           <LikeIcon />
         </button>
       )}
       {showDislike && (
-        <button type="button" className={btnCls} onClick={onDislike ?? (() => {})} aria-label="싫어요">
+        <button type="button" className={cls("action-btn")} onClick={onDislike ?? (() => {})} aria-label="싫어요">
           <DislikeIcon />
         </button>
       )}
       {showRefresh && (
-        <button type="button" className={btnCls} onClick={onRefresh ?? (() => {})} aria-label="새로고침">
+        <button type="button" className={cls("action-btn")} onClick={onRefresh ?? (() => {})} aria-label="새로고침">
           <RefreshIcon />
         </button>
       )}
       {showBookmark && (
-        <button type="button" className={btnCls} onClick={onBookmark ?? (() => {})} aria-label="북마크">
+        <button type="button" className={cls("action-btn")} onClick={onBookmark ?? (() => {})} aria-label="북마크">
           <BookmarkIcon />
         </button>
       )}
@@ -60,7 +60,7 @@ export function AgentMessageBubble({
 
   const hasActions = showCopy || showLike || showDislike || showRefresh || showBookmark;
 
-  const contentCls = [getClass(prefix, p, "content"), getClass(prefix, p, "content", "agent")].join(" ");
+  const contentCls = cls("content-agent");
   const agentContent = <div className={contentCls}>{children}</div>;
 
   return (

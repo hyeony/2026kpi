@@ -35,26 +35,38 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
         opacity: 1,
       },
     },
-    [`.${b}-content`]: {
+    /**
+     * content 영역: 단일 modifier(cls("content-user") 등) 사용을 위해
+     * 공통 스타일(padding, fontSize, boxSizing)을 각 변형에 포함.
+     * 중복: 3속성 × 4셀렉터 = 12줄 (유지보수 시 한 곳만 수정하려면 CSS 변수 고려).
+     */
+    [`.${b}-content-user`]: {
       padding: "10px 14px",
       fontSize: "14px",
       boxSizing: "border-box",
-    },
-    [`.${b}-content-user`]: {
       backgroundColor: "#f8f7fa",
       borderRadius: "16px 16px 4px 16px",
     },
     /** 편집 모드: wrapper 배경 변경(옅은 회색) */
     [`.${b}-content-user-editing`]: {
+      padding: "10px 14px",
+      fontSize: "14px",
+      boxSizing: "border-box",
       backgroundColor: "#eef0f3",
       borderRadius: "16px 16px 4px 16px",
     },
     /** 사용자 파일 블록: 말풍선 X, 전체 동일 radius + 옅은 배경 */
     [`.${b}-content-user-file`]: {
+      padding: "10px 14px",
+      fontSize: "14px",
+      boxSizing: "border-box",
       borderRadius: "12px",
       backgroundColor: "rgba(0,0,0,0.02)",
     },
     [`.${b}-content-agent`]: {
+      padding: "10px 14px",
+      fontSize: "14px",
+      boxSizing: "border-box",
       borderRadius: "12px",
     },
     [`.${b}-user-img-wrap`]: {
@@ -72,7 +84,15 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       objectPosition: "center",
       overflow: "hidden",
     },
+    /** 단일 이미지 정사각: user-img-single + 크기 (단일 modifier용) */
     [`.${b}-user-img-single-square`]: {
+      display: "block",
+      maxWidth: "100%",
+      borderRadius: "8px",
+      verticalAlign: "top",
+      objectFit: "cover",
+      objectPosition: "center",
+      overflow: "hidden",
       width: "200px",
       height: "200px",
     },

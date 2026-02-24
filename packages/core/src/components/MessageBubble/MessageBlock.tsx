@@ -25,16 +25,14 @@ export function MessageBlock({
   });
 
   const p = COMPONENT_NAMES.MessageBubble;
-  const rootCls = getClass(prefix, p, "root");
-  const alignCls = getClass(prefix, p, "root", align);
-  const actionsCls = [getClass(prefix, p, "actions"), align === "right" && getClass(prefix, p, "actions", "right")]
+  const cls = (modifier?: string) => getClass(prefix, p, modifier);
+
+  // className은 내부 클래스명 뒤에 공백으로 붙임
+  const mergedClassName = [cls("root"), cls(`root-${align}`), className]
     .filter(Boolean)
     .join(" ");
 
-  // className은 내부 클래스명 뒤에 공백으로 붙임
-  const mergedClassName = [rootCls, alignCls, className]
-    .filter(Boolean)
-    .join(" ");
+  const actionsCls = align === "right" ? [cls("actions"), cls("actions-right")].join(" ") : cls("actions");
 
   return (
     <div className={mergedClassName}>

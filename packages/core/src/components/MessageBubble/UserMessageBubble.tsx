@@ -51,16 +51,7 @@ export function UserMessageBubble({
 }: UserMessageBubbleProps) {
   const { prefix } = useContext(HnineDSContext);
   const p = COMPONENT_NAMES.MessageBubble;
-  const btnCls = getClass(prefix, p, "action-btn");
-  const imgWrapCls = getClass(prefix, p, "user-img-wrap");
-  const imgSingleCls = getClass(prefix, p, "user-img-single");
-  const imgGridCls = getClass(prefix, p, "user-img-grid");
-  const imgGridItemCls = getClass(prefix, p, "user-img-grid-item");
-  const fileItemCls = getClass(prefix, p, "user-file-item");
-  const fileIconCls = getClass(prefix, p, "user-file-icon");
-  const fileBodyCls = getClass(prefix, p, "user-file-body");
-  const fileNameCls = getClass(prefix, p, "user-file-name");
-  const fileTypeCls = getClass(prefix, p, "user-file-type");
+  const cls = (modifier?: string) => getClass(prefix, p, modifier);
 
   const validImages = useMemo(() => filterValidImages(images), [images]);
   const validFiles = useMemo(() => filterValidFiles(files), [files]);
@@ -80,30 +71,18 @@ export function UserMessageBubble({
 
   /** 편집 모드: wrapper 배경 변경 + 취소/확인 + 텍스트 textarea + 파일 삭제 버튼 */
   if (isEditing) {
-    const contentUserEditingCls = getClass(prefix, p, "content-user-editing");
-    const editTextWrapCls = getClass(prefix, p, "edit-text-wrap");
-    const editTextareaCls = getClass(prefix, p, "edit-textarea");
-    const editActionsCls = getClass(prefix, p, "edit-actions");
-    const editBtnCancelCls = getClass(prefix, p, "edit-btn-cancel");
-    const editBtnConfirmCls = getClass(prefix, p, "edit-btn-confirm");
-    const fileEditWrapCls = getClass(prefix, p, "user-file-edit-wrap");
-    const imgEditWrapCls = getClass(prefix, p, "user-img-edit-item-wrap");
-    const imgSingleSquareWrapCls = getClass(prefix, p, "user-img-single-square-wrap");
-    const imgDeleteBtnCls = getClass(prefix, p, "user-img-delete-btn");
-    const contentClsBase = [getClass(prefix, p, "content"), getClass(prefix, p, "content", "user"), contentUserEditingCls].join(" ");
-
     const imageBlockEditing = hasImages ? (
-      <div className={imgWrapCls}>
+      <div className={cls("user-img-wrap")}>
         {validImages.length === 1 ? (
-          <div className={[imgEditWrapCls, imgSingleSquareWrapCls].join(" ")}>
+          <div className={[cls("user-img-edit-item-wrap"), cls("user-img-single-square-wrap")].join(" ")}>
             <img
               src={validImages[0].src}
               alt={validImages[0].alt ?? ""}
-              className={[imgSingleCls, getClass(prefix, p, "user-img-single-square")].join(" ")}
+              className={cls("user-img-single-square")}
             />
             <button
               type="button"
-              className={imgDeleteBtnCls}
+              className={cls("user-img-delete-btn")}
               onClick={() => onDeleteImage?.(0)}
               aria-label="이미지 삭제"
             >
@@ -113,20 +92,20 @@ export function UserMessageBubble({
         ) : (
           <div
             className={[
-              imgGridCls,
-              validImages.length === 2 && getClass(prefix, p, "user-img-grid-2"),
-              validImages.length === 4 && getClass(prefix, p, "user-img-grid-4"),
-              (validImages.length === 3 || validImages.length >= 5) && getClass(prefix, p, "user-img-grid-3col"),
+              cls("user-img-grid"),
+              validImages.length === 2 && cls("user-img-grid-2"),
+              validImages.length === 4 && cls("user-img-grid-4"),
+              (validImages.length === 3 || validImages.length >= 5) && cls("user-img-grid-3col"),
             ]
               .filter(Boolean)
               .join(" ")}
           >
             {validImages.map((item, i) => (
-              <div key={i} className={imgEditWrapCls}>
-                <img src={item.src} alt={item.alt ?? ""} className={imgGridItemCls} />
+              <div key={i} className={cls("user-img-edit-item-wrap")}>
+                <img src={item.src} alt={item.alt ?? ""} className={cls("user-img-grid-item")} />
                 <button
                   type="button"
-                  className={imgDeleteBtnCls}
+                  className={cls("user-img-delete-btn")}
                   onClick={() => onDeleteImage?.(i)}
                   aria-label="이미지 삭제"
                 >
@@ -142,21 +121,21 @@ export function UserMessageBubble({
     const fileListWithDelete = hasFiles ? (
       <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: hasImages ? 8 : 0 }}>
         {validFiles.map((file, i) => (
-          <div key={i} className={fileEditWrapCls}>
-            <div className={fileItemCls}>
-              <span className={fileIconCls}>
+          <div key={i} className={cls("user-file-edit-wrap")}>
+            <div className={cls("user-file-item")}>
+              <span className={cls("user-file-icon")}>
                 <FileIcon />
               </span>
-              <div className={fileBodyCls}>
-                <div className={fileNameCls}>{String(file.fileName ?? "").trim() || "—"}</div>
+              <div className={cls("user-file-body")}>
+                <div className={cls("user-file-name")}>{String(file.fileName ?? "").trim() || "—"}</div>
                 {file.fileType != null && file.fileType !== "" && (
-                  <div className={fileTypeCls}>{file.fileType}</div>
+                  <div className={cls("user-file-type")}>{file.fileType}</div>
                 )}
               </div>
             </div>
             <button
               type="button"
-              className={imgDeleteBtnCls}
+              className={cls("user-img-delete-btn")}
               onClick={() => onDeleteFile?.(i)}
               aria-label="파일 삭제"
             >
@@ -168,9 +147,9 @@ export function UserMessageBubble({
     ) : null;
 
     const textArea = (
-      <div className={editTextWrapCls} style={hasImages || hasFiles ? { marginTop: 8 } : undefined}>
+      <div className={cls("edit-text-wrap")} style={hasImages || hasFiles ? { marginTop: 8 } : undefined}>
         <textarea
-          className={editTextareaCls}
+          className={cls("edit-textarea")}
           value={draftText}
           onChange={(e) => setDraftText(e.target.value)}
           placeholder="메시지를 입력하세요"
@@ -180,18 +159,18 @@ export function UserMessageBubble({
     );
 
     const editActions = (
-      <div className={editActionsCls}>
-        <button type="button" className={[getClass(prefix, p, "edit-btn"), editBtnCancelCls].join(" ")} onClick={onCancelEdit}>
+      <div className={cls("edit-actions")}>
+        <button type="button" className={[cls("edit-btn"), cls("edit-btn-cancel")].join(" ")} onClick={onCancelEdit}>
           취소
         </button>
-        <button type="button" className={[getClass(prefix, p, "edit-btn"), editBtnConfirmCls].join(" ")} onClick={() => onConfirmEdit?.(draftText)}>
+        <button type="button" className={[cls("edit-btn"), cls("edit-btn-confirm")].join(" ")} onClick={() => onConfirmEdit?.(draftText)}>
           확인
         </button>
       </div>
     );
 
     const editingContent = (
-      <div className={contentClsBase}>
+      <div className={cls("content-user-editing")}>
         {imageBlockEditing}
         {fileListWithDelete}
         {textArea}
@@ -207,17 +186,17 @@ export function UserMessageBubble({
   const actions = (
     <>
       {showCopy && (
-        <button type="button" className={btnCls} onClick={onCopy ?? (() => {})} aria-label="복사">
+        <button type="button" className={cls("action-btn")} onClick={onCopy ?? (() => {})} aria-label="복사">
           <CopyIcon />
         </button>
       )}
       {showEdit && (
-        <button type="button" className={btnCls} onClick={onEdit ?? (() => {})} aria-label="편집">
+        <button type="button" className={cls("action-btn")} onClick={onEdit ?? (() => {})} aria-label="편집">
           <EditIcon />
         </button>
       )}
       {showBookmark && (
-        <button type="button" className={btnCls} onClick={onBookmark ?? (() => {})} aria-label="북마크">
+        <button type="button" className={cls("action-btn")} onClick={onBookmark ?? (() => {})} aria-label="북마크">
           <BookmarkIcon />
         </button>
       )}
@@ -226,38 +205,35 @@ export function UserMessageBubble({
 
   const hasActions = showCopy || showEdit || showBookmark;
 
-  const contentCls = [getClass(prefix, p, "content"), getClass(prefix, p, "content", "user")].join(" ");
+  const contentCls = cls("content-user");
 
   const imageBlock =
     hasImages ? (
-      <div className={imgWrapCls}>
+      <div className={cls("user-img-wrap")}>
         {validImages.length === 1 ? (
           <img
             src={validImages[0].src}
             alt={validImages[0].alt ?? ""}
-            className={[imgSingleCls, getClass(prefix, p, "user-img-single-square")].join(" ")}
+            className={cls("user-img-single-square")}
           />
         ) : (
           <div
             className={[
-              imgGridCls,
-              validImages.length === 2 && getClass(prefix, p, "user-img-grid-2"),
-              validImages.length === 4 && getClass(prefix, p, "user-img-grid-4"),
-              (validImages.length === 3 || validImages.length >= 5) && getClass(prefix, p, "user-img-grid-3col"),
+              cls("user-img-grid"),
+              validImages.length === 2 && cls("user-img-grid-2"),
+              validImages.length === 4 && cls("user-img-grid-4"),
+              (validImages.length === 3 || validImages.length >= 5) && cls("user-img-grid-3col"),
             ]
               .filter(Boolean)
               .join(" ")}
           >
             {validImages.map((item, i) => (
-              <img key={i} src={item.src} alt={item.alt ?? ""} className={imgGridItemCls} />
+              <img key={i} src={item.src} alt={item.alt ?? ""} className={cls("user-img-grid-item")} />
             ))}
           </div>
         )}
       </div>
     ) : null;
-
-  const contentUserNextCls = getClass(prefix, p, "content-user-next");
-  const contentUserFileCls = getClass(prefix, p, "content-user-file");
 
   type SegmentType = "image" | "file" | "text";
   const segments: { type: SegmentType; node: React.ReactNode }[] = [];
@@ -267,14 +243,14 @@ export function UserMessageBubble({
       segments.push({
         type: "file",
         node: (
-          <div key={`file-${i}`} className={fileItemCls}>
-            <span className={fileIconCls}>
+          <div key={`file-${i}`} className={cls("user-file-item")}>
+            <span className={cls("user-file-icon")}>
               <FileIcon />
             </span>
-            <div className={fileBodyCls}>
-              <div className={fileNameCls}>{String(file.fileName ?? "").trim() || "—"}</div>
+            <div className={cls("user-file-body")}>
+              <div className={cls("user-file-name")}>{String(file.fileName ?? "").trim() || "—"}</div>
               {file.fileType != null && file.fileType !== "" && (
-                <div className={fileTypeCls}>{file.fileType}</div>
+                <div className={cls("user-file-type")}>{file.fileType}</div>
               )}
             </div>
           </div>
@@ -293,9 +269,8 @@ export function UserMessageBubble({
           <div
             key={i}
             className={[
-              contentCls,
-              seg.type === "file" ? contentUserFileCls : "",
-              i > 0 ? contentUserNextCls : "",
+              seg.type === "file" ? cls("content-user-file") : cls("content-user"),
+              i > 0 ? cls("content-user-next") : "",
             ]
               .filter(Boolean)
               .join(" ")}
