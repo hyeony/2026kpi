@@ -3,6 +3,7 @@ import { UserMessageBubbleProps } from "./MessageBubble.types";
 import type { UserMessageImage, UserMessageFile } from "./MessageBubble.types";
 import { MessageBlock } from "./MessageBlock";
 import { getClass } from "../../prefix";
+import { cn } from "../../utils/cn";
 import { COMPONENT_NAMES } from "../../componentNames";
 import { HnineDSContext } from "../../context/HnineDSContext";
 import { CopyIcon, EditIcon, BookmarkIcon, FileIcon, CloseIcon } from "./MessageBubble.icons";
@@ -74,7 +75,7 @@ export function UserMessageBubble({
     const imageBlockEditing = hasImages ? (
       <div className={cls("user-img-wrap")}>
         {validImages.length === 1 ? (
-          <div className={[cls("user-img-edit-item-wrap"), cls("user-img-single-square-wrap")].join(" ")}>
+          <div className={cn(cls("user-img-edit-item-wrap"), cls("user-img-single-square-wrap"))}>
             <img
               src={validImages[0].src}
               alt={validImages[0].alt ?? ""}
@@ -91,14 +92,12 @@ export function UserMessageBubble({
           </div>
         ) : (
           <div
-            className={[
+            className={cn(
               cls("user-img-grid"),
               validImages.length === 2 && cls("user-img-grid-2"),
               validImages.length === 4 && cls("user-img-grid-4"),
-              (validImages.length === 3 || validImages.length >= 5) && cls("user-img-grid-3col"),
-            ]
-              .filter(Boolean)
-              .join(" ")}
+              (validImages.length === 3 || validImages.length >= 5) && cls("user-img-grid-3col")
+            )}
           >
             {validImages.map((item, i) => (
               <div key={i} className={cls("user-img-edit-item-wrap")}>
@@ -160,10 +159,10 @@ export function UserMessageBubble({
 
     const editActions = (
       <div className={cls("edit-actions")}>
-        <button type="button" className={[cls("edit-btn"), cls("edit-btn-cancel")].join(" ")} onClick={onCancelEdit}>
+        <button type="button" className={cn(cls("edit-btn"), cls("edit-btn-cancel"))} onClick={onCancelEdit}>
           취소
         </button>
-        <button type="button" className={[cls("edit-btn"), cls("edit-btn-confirm")].join(" ")} onClick={() => onConfirmEdit?.(draftText)}>
+        <button type="button" className={cn(cls("edit-btn"), cls("edit-btn-confirm"))} onClick={() => onConfirmEdit?.(draftText)}>
           확인
         </button>
       </div>
@@ -218,14 +217,12 @@ export function UserMessageBubble({
           />
         ) : (
           <div
-            className={[
+            className={cn(
               cls("user-img-grid"),
               validImages.length === 2 && cls("user-img-grid-2"),
               validImages.length === 4 && cls("user-img-grid-4"),
-              (validImages.length === 3 || validImages.length >= 5) && cls("user-img-grid-3col"),
-            ]
-              .filter(Boolean)
-              .join(" ")}
+              (validImages.length === 3 || validImages.length >= 5) && cls("user-img-grid-3col")
+            )}
           >
             {validImages.map((item, i) => (
               <img key={i} src={item.src} alt={item.alt ?? ""} className={cls("user-img-grid-item")} />
@@ -268,12 +265,10 @@ export function UserMessageBubble({
         {segments.map((seg, i) => (
           <div
             key={i}
-            className={[
+            className={cn(
               seg.type === "file" ? cls("content-user-file") : cls("content-user"),
-              i > 0 ? cls("content-user-next") : "",
-            ]
-              .filter(Boolean)
-              .join(" ")}
+              i > 0 ? cls("content-user-next") : ""
+            )}
           >
             {seg.node}
           </div>

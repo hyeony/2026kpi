@@ -3,6 +3,7 @@ import { MessageBlockProps } from "./MessageBubble.types";
 import { getMessageBubbleStyles, getMessageBubbleStyleId } from "./MessageBubble.style";
 import { useComponentStyle } from "../../hooks/useComponentStyle";
 import { getClass } from "../../prefix";
+import { cn } from "../../utils/cn";
 import { COMPONENT_NAMES } from "../../componentNames";
 import { HnineDSContext } from "../../context/HnineDSContext";
 
@@ -27,17 +28,10 @@ export function MessageBlock({
   const p = COMPONENT_NAMES.MessageBubble;
   const cls = (modifier?: string) => getClass(prefix, p, modifier);
 
-  // className은 내부 클래스명 뒤에 공백으로 붙임
-  const mergedClassName = [cls("root"), cls(`root-${align}`), className]
-    .filter(Boolean)
-    .join(" ");
-
-  const actionsCls = align === "right" ? [cls("actions"), cls("actions-right")].join(" ") : cls("actions");
-
   return (
-    <div className={mergedClassName}>
+    <div className={cn(cls("root"), cls(`root-${align}`), className)}>
       {content}
-      {actions != null && <div className={actionsCls}>{actions}</div>}
+      {actions != null && <div className={cn(cls("actions"), align === "right" && cls("actions-right"))}>{actions}</div>}
     </div>
   );
 }
