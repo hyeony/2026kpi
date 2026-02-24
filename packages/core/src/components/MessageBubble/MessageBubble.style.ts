@@ -18,7 +18,7 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
     [`.${b}-root`]: {
       display: "flex",
       flexDirection: "column",
-      alignItems: "stretch",
+      alignItems: "flex-end",
       maxWidth: "70%",
       boxSizing: "border-box",
     },
