@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { HnineDSProvider, UserMessageBubble, AgentMessageBubble } from "@hnineds/core";
 
 const sectionStyle: React.CSSProperties = {
@@ -14,6 +14,81 @@ const chatContainerStyle: React.CSSProperties = {
   gap: "16px",
   maxWidth: "1020px",
 };
+
+function EditModeDemo() {
+  const [isEditing, setIsEditing] = useState(false);
+  const [text, setText] = useState("아니 우리는 라이브러리니까. 메세지관련해서는 뭐 아예모르지. 사용하는사람들이 알아서 데이터넣지않을까");
+  const [files, setFiles] = useState<{ fileName: string; fileType?: string }[]>([
+    { fileName: "보고서.pdf", fileType: "PDF 문서" },
+    { fileName: "정리.docx", fileType: "Word 문서" },
+  ]);
+
+  return (
+    <>
+      {!isEditing ? (
+        <UserMessageBubble
+          editInitialText={text}
+          files={files}
+          onCopy={() => {}}
+          onEdit={() => setIsEditing(true)}
+          onBookmark={() => {}}
+        >
+          {text}
+        </UserMessageBubble>
+      ) : (
+        <UserMessageBubble
+          isEditing
+          editInitialText={text}
+          files={files}
+          onCancelEdit={() => setIsEditing(false)}
+          onConfirmEdit={(nextText) => {
+            setText(nextText);
+            setIsEditing(false);
+          }}
+          onDeleteFile={(i) => setFiles((prev) => prev.filter((_, idx) => idx !== i))}
+        />
+      )}
+    </>
+  );
+}
+
+function EditModeImageDemo() {
+  const [isEditing, setIsEditing] = useState(false);
+  const [text, setText] = useState("이미지 올릴게요");
+  const [images, setImages] = useState<{ src: string; alt?: string }[]>([
+    { src: "https://placehold.co/120x120?text=1" },
+    { src: "https://placehold.co/120x120?text=2" },
+    { src: "https://placehold.co/120x120?text=3" },
+  ]);
+
+  return (
+    <>
+      {!isEditing ? (
+        <UserMessageBubble
+          images={images}
+          editInitialText={text}
+          onCopy={() => {}}
+          onEdit={() => setIsEditing(true)}
+          onBookmark={() => {}}
+        >
+          {text}
+        </UserMessageBubble>
+      ) : (
+        <UserMessageBubble
+          isEditing
+          images={images}
+          editInitialText={text}
+          onCancelEdit={() => setIsEditing(false)}
+          onConfirmEdit={(nextText) => {
+            setText(nextText);
+            setIsEditing(false);
+          }}
+          onDeleteImage={(i) => setImages((prev) => prev.filter((_, idx) => idx !== i))}
+        />
+      )}
+    </>
+  );
+}
 
 export function MessageBubblePage() {
   return (
@@ -135,6 +210,17 @@ export function MessageBubblePage() {
           >
             이미지 말풍선 → 파일 말풍선 → 텍스트 말풍선
           </UserMessageBubble>
+        </div>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2>User 메시지 — 편집 모드</h2>
+        <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "16px" }}>
+          isEditing 시 wrapper 배경 변경, 하단 취소/확인, 텍스트 textarea. 이미지는 그리드 + 우측 상단 원형 X 삭제, 파일은 행마다 삭제. 데이터 유지는 호출측(onConfirmEdit, onDeleteImage, onDeleteFile)에서.
+        </p>
+        <div style={chatContainerStyle}>
+          <EditModeDemo />
+          <EditModeImageDemo />
         </div>
       </section>
 

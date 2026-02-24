@@ -42,6 +42,18 @@ export interface UserMessageBubbleProps {
   /** 북마크 버튼 표시 @default true */
   showBookmark?: boolean;
   onBookmark?: () => void;
+  /** 편집 모드 여부. true면 wrapper 배경 변경 + 취소/확인 버튼 + 텍스트 편집/파일 삭제 UI */
+  isEditing?: boolean;
+  /** 편집 모드 진입 시 텍스트 영역 초기값(문자열). isEditing && 텍스트 있을 때 사용 */
+  editInitialText?: string;
+  /** 편집 취소 클릭 */
+  onCancelEdit?: () => void;
+  /** 편집 확인 클릭. 변경된 텍스트(문자열) 전달. 데이터 유지는 호출측 책임 */
+  onConfirmEdit?: (text: string) => void;
+  /** 편집 모드에서 이미지 삭제 클릭. index는 validImages 기준 */
+  onDeleteImage?: (index: number) => void;
+  /** 편집 모드에서 파일 삭제 클릭. index는 validFiles 기준 */
+  onDeleteFile?: (index: number) => void;
   className?: string;
 }
 

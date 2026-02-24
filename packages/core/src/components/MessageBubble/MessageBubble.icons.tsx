@@ -57,6 +57,28 @@ export function RefreshIcon() {
   );
 }
 
+/** 닫기(X) 아이콘 — 편집 모드 이미지 삭제 등, 원형 버튼 내부용 */
+export function CloseIcon() {
+  return (
+    <svg {...iconProps} aria-hidden width={14} height={14} viewBox="0 0 24 24">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
+/** 삭제(휴지통) 아이콘 — 편집 모드 파일 삭제 등 */
+export function TrashIcon() {
+  return (
+    <svg {...iconProps} aria-hidden>
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+      <line x1="10" y1="11" x2="10" y2="17" />
+      <line x1="14" y1="11" x2="14" y2="17" />
+    </svg>
+  );
+}
+
 /** 파일 첨부용 직사각형(문서) 아이콘 */
 export function FileIcon() {
   return (

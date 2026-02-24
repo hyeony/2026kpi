@@ -37,6 +37,11 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       backgroundColor: "#f8f7fa",
       borderRadius: "16px 16px 4px 16px",
     },
+    /** 편집 모드: wrapper 배경 변경(옅은 회색) */
+    [`.${b}-content-user-editing`]: {
+      backgroundColor: "#eef0f3",
+      borderRadius: "16px 16px 4px 16px",
+    },
     /** 사용자 파일 블록: 말풍선 X, 전체 동일 radius + 옅은 배경 */
     [`.${b}-content-user-file`]: {
       borderRadius: "12px",
@@ -100,13 +105,54 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       borderRadius: "6px",
       display: "block",
     },
-    /** 파일 개별 블록(말풍선 하나당 파일 하나). 리스트 래퍼 없음 */
+    /** 편집 모드: 이미지 셀 래퍼(삭제 버튼 절대 위치용) */
+    [`.${b}-user-img-edit-item-wrap`]: {
+      position: "relative",
+      flexShrink: 0,
+      display: "block",
+    },
+    [`.${b}-user-img-edit-item-wrap .${b}-user-img-grid-item`]: {
+      display: "block",
+    },
+    [`.${b}-user-img-edit-item-wrap.${b}-user-img-single-square-wrap`]: {
+      width: "200px",
+      height: "200px",
+    },
+    /** 편집 모드: 이미지 우측 상단 원형 X 삭제 버튼 */
+    [`.${b}-user-img-delete-btn`]: {
+      position: "absolute",
+      top: "6px",
+      right: "6px",
+      width: "24px",
+      height: "24px",
+      borderRadius: "50%",
+      backgroundColor: "rgba(0,0,0,0.5)",
+      color: "#fff",
+      border: "none",
+      padding: 0,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      transition: "background 0.15s",
+    },
+    [`.${b}-user-img-delete-btn:hover`]: {
+      backgroundColor: "rgba(0,0,0,0.7)",
+    },
+    /** 파일 개별 블록(말풍선 하나당 파일 하나). 너비 통일 */
     [`.${b}-user-file-item`]: {
       display: "flex",
       alignItems: "flex-start",
       gap: "10px",
       minWidth: 0,
+      width: "280px",
       maxWidth: "280px",
+      boxSizing: "border-box",
+    },
+    /** 편집 모드: 파일 행 래퍼(삭제 버튼 절대 위치용, 이미지와 동일한 원형 X) */
+    [`.${b}-user-file-edit-wrap`]: {
+      position: "relative",
+      width: "280px",
       boxSizing: "border-box",
     },
     [`.${b}-user-file-icon`]: {
@@ -137,6 +183,61 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       color: "#9ca3af",
       marginTop: "2px",
     },
+    /** 편집 모드: 텍스트 영역을 구분하는 input 스타일(이미지/파일+텍스트일 때) */
+    [`.${b}-edit-text-wrap`]: {
+      marginTop: "8px",
+      width: "100%",
+      boxSizing: "border-box",
+    },
+    [`.${b}-edit-textarea`]: {
+      width: "100%",
+      minHeight: "60px",
+      padding: "10px 12px",
+      fontSize: "14px",
+      lineHeight: 1.5,
+      color: "#111827",
+      backgroundColor: "#fff",
+      border: "1px solid #e5e7eb",
+      borderRadius: "8px",
+      resize: "vertical",
+      boxSizing: "border-box",
+      outline: "none",
+    },
+    [`.${b}-edit-textarea:focus`]: {
+      borderColor: "#6b7280",
+    },
+    [`.${b}-edit-actions`]: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "flex-end",
+      gap: "8px",
+      marginTop: "10px",
+    },
+    [`.${b}-edit-btn`]: {
+      padding: "8px 16px",
+      fontSize: "14px",
+      fontWeight: 500,
+      borderRadius: "8px",
+      border: "none",
+      cursor: "pointer",
+      transition: "background 0.15s, color 0.15s",
+    },
+    [`.${b}-edit-btn-cancel`]: {
+      backgroundColor: "#fff",
+      color: "#111827",
+      border: "1px solid #e5e7eb",
+    },
+    [`.${b}-edit-btn-cancel:hover`]: {
+      backgroundColor: "#f9fafb",
+    },
+    [`.${b}-edit-btn-confirm`]: {
+      backgroundColor: "#111827",
+      color: "#fff",
+    },
+    [`.${b}-edit-btn-confirm:hover`]: {
+      backgroundColor: "#374151",
+    },
+    /** 편집 모드: 파일 삭제는 .user-img-delete-btn 재사용(이미지와 동일 원형 X) */
     [`.${b}-actions`]: {
       display: "flex",
       alignItems: "center",
@@ -144,6 +245,14 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       marginTop: "6px",
       paddingLeft: "4px",
       paddingRight: "4px",
+    },
+    /** User 메시지: 액션 버튼은 호버 시에만 표시 */
+    [`.${b}-root-right .${b}-actions`]: {
+      opacity: 0,
+      transition: "opacity 0.15s ease",
+    },
+    [`.${b}-root-right:hover .${b}-actions`]: {
+      opacity: 1,
     },
     [`.${b}-actions-right`]: {
       justifyContent: "flex-end",

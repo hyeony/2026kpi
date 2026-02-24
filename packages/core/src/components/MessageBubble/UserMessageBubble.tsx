@@ -1,11 +1,11 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useMemo, useState, useEffect } from "react";
 import { UserMessageBubbleProps } from "./MessageBubble.types";
 import type { UserMessageImage, UserMessageFile } from "./MessageBubble.types";
 import { MessageBlock } from "./MessageBlock";
 import { getClass } from "../../prefix";
 import { COMPONENT_NAMES } from "../../componentNames";
 import { HnineDSContext } from "../../context/HnineDSContext";
-import { CopyIcon, EditIcon, BookmarkIcon, FileIcon } from "./MessageBubble.icons";
+import { CopyIcon, EditIcon, BookmarkIcon, FileIcon, CloseIcon } from "./MessageBubble.icons";
 
 /** React가 아무것도 렌더하지 않는 값(null, undefined, false, true). 0·"" 등은 콘텐츠로 간주 */
 function hasRenderableContent(node: React.ReactNode): boolean {
@@ -41,6 +41,12 @@ export function UserMessageBubble({
   onEdit,
   showBookmark = true,
   onBookmark,
+  isEditing = false,
+  editInitialText = "",
+  onCancelEdit,
+  onConfirmEdit,
+  onDeleteImage,
+  onDeleteFile,
   className,
 }: UserMessageBubbleProps) {
   const { prefix } = useContext(HnineDSContext);
@@ -62,9 +68,140 @@ export function UserMessageBubble({
   const hasFiles = validFiles.length > 0;
   const hasTextContent = hasRenderableContent(children);
 
-  /** 텍스트·이미지·파일 모두 없으면 빈 버블 금지 */
-  if (!hasImages && !hasFiles && !hasTextContent) {
+  const [draftText, setDraftText] = useState(editInitialText);
+  useEffect(() => {
+    if (isEditing) setDraftText(editInitialText);
+  }, [isEditing, editInitialText]);
+
+  /** 텍스트·이미지·파일 모두 없으면 빈 버블 금지 (편집 모드가 아닐 때) */
+  if (!isEditing && !hasImages && !hasFiles && !hasTextContent) {
     return null;
+  }
+
+  /** 편집 모드: wrapper 배경 변경 + 취소/확인 + 텍스트 textarea + 파일 삭제 버튼 */
+  if (isEditing) {
+    const contentUserEditingCls = getClass(prefix, p, "content-user-editing");
+    const editTextWrapCls = getClass(prefix, p, "edit-text-wrap");
+    const editTextareaCls = getClass(prefix, p, "edit-textarea");
+    const editActionsCls = getClass(prefix, p, "edit-actions");
+    const editBtnCancelCls = getClass(prefix, p, "edit-btn-cancel");
+    const editBtnConfirmCls = getClass(prefix, p, "edit-btn-confirm");
+    const fileEditWrapCls = getClass(prefix, p, "user-file-edit-wrap");
+    const imgEditWrapCls = getClass(prefix, p, "user-img-edit-item-wrap");
+    const imgSingleSquareWrapCls = getClass(prefix, p, "user-img-single-square-wrap");
+    const imgDeleteBtnCls = getClass(prefix, p, "user-img-delete-btn");
+    const contentClsBase = [getClass(prefix, p, "content"), getClass(prefix, p, "content", "user"), contentUserEditingCls].join(" ");
+
+    const imageBlockEditing = hasImages ? (
+      <div className={imgWrapCls}>
+        {validImages.length === 1 ? (
+          <div className={[imgEditWrapCls, imgSingleSquareWrapCls].join(" ")}>
+            <img
+              src={validImages[0].src}
+              alt={validImages[0].alt ?? ""}
+              className={[imgSingleCls, getClass(prefix, p, "user-img-single-square")].join(" ")}
+            />
+            <button
+              type="button"
+              className={imgDeleteBtnCls}
+              onClick={() => onDeleteImage?.(0)}
+              aria-label="이미지 삭제"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+        ) : (
+          <div
+            className={[
+              imgGridCls,
+              validImages.length === 2 && getClass(prefix, p, "user-img-grid-2"),
+              validImages.length === 4 && getClass(prefix, p, "user-img-grid-4"),
+              (validImages.length === 3 || validImages.length >= 5) && getClass(prefix, p, "user-img-grid-3col"),
+            ]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            {validImages.map((item, i) => (
+              <div key={i} className={imgEditWrapCls}>
+                <img src={item.src} alt={item.alt ?? ""} className={imgGridItemCls} />
+                <button
+                  type="button"
+                  className={imgDeleteBtnCls}
+                  onClick={() => onDeleteImage?.(i)}
+                  aria-label="이미지 삭제"
+                >
+                  <CloseIcon />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    ) : null;
+
+    const fileListWithDelete = hasFiles ? (
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: hasImages ? 8 : 0 }}>
+        {validFiles.map((file, i) => (
+          <div key={i} className={fileEditWrapCls}>
+            <div className={fileItemCls}>
+              <span className={fileIconCls}>
+                <FileIcon />
+              </span>
+              <div className={fileBodyCls}>
+                <div className={fileNameCls}>{String(file.fileName ?? "").trim() || "—"}</div>
+                {file.fileType != null && file.fileType !== "" && (
+                  <div className={fileTypeCls}>{file.fileType}</div>
+                )}
+              </div>
+            </div>
+            <button
+              type="button"
+              className={imgDeleteBtnCls}
+              onClick={() => onDeleteFile?.(i)}
+              aria-label="파일 삭제"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+        ))}
+      </div>
+    ) : null;
+
+    const textArea = (
+      <div className={editTextWrapCls} style={hasImages || hasFiles ? { marginTop: 8 } : undefined}>
+        <textarea
+          className={editTextareaCls}
+          value={draftText}
+          onChange={(e) => setDraftText(e.target.value)}
+          placeholder="메시지를 입력하세요"
+          aria-label="메시지 수정"
+        />
+      </div>
+    );
+
+    const editActions = (
+      <div className={editActionsCls}>
+        <button type="button" className={[getClass(prefix, p, "edit-btn"), editBtnCancelCls].join(" ")} onClick={onCancelEdit}>
+          취소
+        </button>
+        <button type="button" className={[getClass(prefix, p, "edit-btn"), editBtnConfirmCls].join(" ")} onClick={() => onConfirmEdit?.(draftText)}>
+          확인
+        </button>
+      </div>
+    );
+
+    const editingContent = (
+      <div className={contentClsBase}>
+        {imageBlockEditing}
+        {fileListWithDelete}
+        {textArea}
+        {editActions}
+      </div>
+    );
+
+    return (
+      <MessageBlock content={editingContent} align="right" className={className} />
+    );
   }
 
   const actions = (
