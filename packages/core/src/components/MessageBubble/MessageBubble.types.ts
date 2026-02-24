@@ -11,18 +11,16 @@ export interface MessageBlockProps {
   className?: string;
 }
 
-/** 말풍선 내 이미지 한 장. width/height 있으면 1장일 때 horizon/portrait 판단, 없으면 정사각 fallback */
+/** 말풍선 내 이미지 한 장. 표시 크기는 말풍선 UI에서 강제(1장=정사각, 2장~=120×120 그리드). */
 export interface UserMessageImage {
   src: string;
-  width?: number;
-  height?: number;
   alt?: string;
 }
 
 /** User 말풍선 액션: 복사, 편집(콜백만), 북마크. 표시 여부(showX)와 동작(onX) 분리. */
 export interface UserMessageBubbleProps {
   children?: ReactNode;
-  /** 말풍선 내부 이미지. 1장: width/height 있으면 horizon(250x200)·portrait(200x250) 판단, 없으면 정사각. 2장~: 120x120 그리드, 5장: 위3 아래2 */
+  /** 말풍선 내부 이미지. 1장: 정사각(200×200), 2장~: 120×120 그리드. 크기는 UI에서 통일 */
   images?: UserMessageImage[];
   /** 복사 버튼 표시 @default true */
   showCopy?: boolean;

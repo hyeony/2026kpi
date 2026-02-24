@@ -6,19 +6,9 @@ import { COMPONENT_NAMES } from "../../componentNames";
 import { HnineDSContext } from "../../context/HnineDSContext";
 import { CopyIcon, EditIcon, BookmarkIcon } from "./MessageBubble.icons";
 
-/** 1장일 때 single 이미지 타입: width/height 있으면 가로/세로/정사각, 없으면 정사각 fallback */
-function getSingleImageType(img: { width?: number; height?: number }): "square" | "horizon" | "portrait" {
-  const w = img.width;
-  const h = img.height;
-  if (w == null || h == null) return "square";
-  if (w > h) return "horizon";
-  if (h > w) return "portrait";
-  return "square";
-}
-
 /**
  * 사용자 메시지: 항상 우측 정렬, 말풍선 스타일.
- * 이미지: 1장(정사각/250x200/200x250), 2장~ 120x120 그리드, 5장 시 위3 아래2.
+ * 이미지: 1장=정사각(200×200), 2장~=120×120 그리드. 크기는 말풍선에서 강제.
  * 액션: showX로 표시 여부, onX로 동작(없으면 noop 또는 추후 내부 기본 동작).
  */
 export function UserMessageBubble({
@@ -64,32 +54,30 @@ export function UserMessageBubble({
 
   const contentCls = [getClass(prefix, p, "content"), getClass(prefix, p, "content", "user")].join(" ");
 
+  const hasImages = images != null && images.length > 0;
+  const hasTextContent = Boolean(children);
+
   const imageBlock =
-    images != null && images.length > 0 ? (
+    hasImages ? (
       <div className={imgWrapCls}>
-        {images.length === 1 ? (
+        {images!.length === 1 ? (
           <img
-            src={images[0].src}
-            alt={images[0].alt ?? ""}
-            className={[
-              imgSingleCls,
-              getClass(prefix, p, "user-img-single", getSingleImageType(images[0])),
-            ].join(" ")}
+            src={images![0].src}
+            alt={images![0].alt ?? ""}
+            className={[imgSingleCls, getClass(prefix, p, "user-img-single-square")].join(" ")}
           />
         ) : (
           <div
             className={[
               imgGridCls,
-              images.length === 2 && getClass(prefix, p, "user-img-grid-2"),
-              images.length === 3 && getClass(prefix, p, "user-img-grid-3"),
-              images.length === 4 && getClass(prefix, p, "user-img-grid-4"),
-              images.length === 5 && getClass(prefix, p, "user-img-grid-5"),
-              images.length >= 6 && getClass(prefix, p, "user-img-grid-6up"),
+              images!.length === 2 && getClass(prefix, p, "user-img-grid-2"),
+              images!.length === 4 && getClass(prefix, p, "user-img-grid-4"),
+              (images!.length === 3 || images!.length >= 5) && getClass(prefix, p, "user-img-grid-3col"),
             ]
               .filter(Boolean)
               .join(" ")}
           >
-            {images.map((item, i) => (
+            {images!.map((item, i) => (
               <img key={i} src={item.src} alt={item.alt ?? ""} className={imgGridItemCls} />
             ))}
           </div>
@@ -97,12 +85,21 @@ export function UserMessageBubble({
       </div>
     ) : null;
 
-  const userContent = (
-    <div className={contentCls}>
-      {imageBlock}
-      {children}
-    </div>
-  );
+  const contentUserNextCls = getClass(prefix, p, "content-user-next");
+
+  const userContent =
+    hasImages && hasTextContent ? (
+      <>
+        <div className={contentCls}>{imageBlock}</div>
+        <div className={[contentCls, contentUserNextCls].join(" ")}>{children}</div>
+      </>
+    ) : hasImages ? (
+      <div className={contentCls}>{imageBlock}</div>
+    ) : hasTextContent ? (
+      <div className={contentCls}>{children}</div>
+    ) : (
+      <div className={contentCls}>{children}</div>
+    );
 
   return (
     <MessageBlock

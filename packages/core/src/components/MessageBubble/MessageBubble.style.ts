@@ -41,22 +41,23 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       borderRadius: "12px",
     },
     [`.${b}-user-img-wrap`]: {
-      marginBottom: "8px",
+      /* 이미지 그리드/단일 이미지 래퍼 */
     },
-    [`.${b}-user-img-wrap:last-child`]: {
-      marginBottom: 0,
+    [`.${b}-content-user-next`]: {
+      marginTop: "8px",
     },
     [`.${b}-user-img-single`]: {
       display: "block",
       maxWidth: "100%",
-      objectFit: "contain",
       borderRadius: "8px",
       verticalAlign: "top",
+      objectFit: "cover",
+      objectPosition: "center",
+      overflow: "hidden",
     },
     [`.${b}-user-img-single-square`]: {
       width: "200px",
       height: "200px",
-      objectFit: "cover",
     },
     [`.${b}-user-img-single-horizon`]: {
       maxWidth: "250px",
@@ -67,29 +68,30 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       maxHeight: "250px",
     },
     [`.${b}-user-img-grid`]: {
-      display: "grid",
       gap: "4px",
-      gridAutoFlow: "dense",
     },
     [`.${b}-user-img-grid-2`]: {
+      display: "grid",
       gridTemplateColumns: "repeat(2, 120px)",
-    },
-    [`.${b}-user-img-grid-3`]: {
-      gridTemplateColumns: "repeat(3, 120px)",
     },
     [`.${b}-user-img-grid-4`]: {
+      display: "grid",
       gridTemplateColumns: "repeat(2, 120px)",
     },
-    [`.${b}-user-img-grid-5`]: {
-      gridTemplateColumns: "repeat(3, 120px)",
-    },
-    [`.${b}-user-img-grid-6up`]: {
-      gridTemplateColumns: "repeat(3, 120px)",
+    /** 3열 레이아웃(3장·5장·6장…). flex+flex-end로 마지막 줄이 몇 장이든 오른쪽 정렬, 장수 의존 없음 */
+    [`.${b}-user-img-grid-3col`]: {
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "flex-end",
+      maxWidth: "368px",
     },
     [`.${b}-user-img-grid-item`]: {
       width: "120px",
       height: "120px",
+      flexShrink: 0,
       objectFit: "cover",
+      objectPosition: "center",
+      overflow: "hidden",
       borderRadius: "6px",
       display: "block",
     },

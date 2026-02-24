@@ -57,7 +57,7 @@ export function MessageBubblePage() {
       <section style={sectionStyle}>
         <h2>User 메시지 — 말풍선 내 이미지</h2>
         <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "16px" }}>
-          1장: width/height 있으면 가로형(250×200)·세로형(200×250), 없으면 정사각. 2장~: 120×120 그리드. 5장: 위3 아래2.
+          1장: 정사각(200×200). 2장~: 120×120 그리드. 크기는 말풍선에서 강제. 이미지+텍스트 동시 시 이미지 말풍선 아래 텍스트 말풍선으로 분리.
         </p>
         <div style={chatContainerStyle}>
           <UserMessageBubble
@@ -66,19 +66,7 @@ export function MessageBubblePage() {
             onEdit={() => {}}
             onBookmark={() => {}}
           >
-            이미지 1장 (width/height 없음 → 정사각)
-          </UserMessageBubble>
-          <UserMessageBubble
-            images={[{ src: "https://placehold.co/250x180?text=horizon", width: 250, height: 180 }]}
-            onCopy={() => {}}
-          >
-            이미지 1장 가로형 (width &gt; height → max 250×200)
-          </UserMessageBubble>
-          <UserMessageBubble
-            images={[{ src: "https://placehold.co/160x250?text=portrait", width: 160, height: 250 }]}
-            onCopy={() => {}}
-          >
-            이미지 1장 세로형 (height &gt; width → 200, max 250)
+            이미지 1장 (정사각 고정)
           </UserMessageBubble>
           <UserMessageBubble
             images={[
@@ -99,7 +87,28 @@ export function MessageBubblePage() {
             ]}
             onCopy={() => {}}
           >
-            이미지 5장 (위3 아래2)
+            이미지 5장 (위3 아래2, 오른쪽 정렬)
+          </UserMessageBubble>
+          <UserMessageBubble
+            images={[
+              { src: "https://placehold.co/120x120?text=1" },
+              { src: "https://placehold.co/120x120?text=2" },
+              { src: "https://placehold.co/120x120?text=3" },
+              { src: "https://placehold.co/120x120?text=4" },
+              { src: "https://placehold.co/120x120?text=5" },
+              { src: "https://placehold.co/120x120?text=6" },
+              { src: "https://placehold.co/120x120?text=7" },
+              { src: "https://placehold.co/120x120?text=8" },
+            ]}
+            onCopy={() => {}}
+          >
+            이미지 8장 (3열, 마지막 줄 오른쪽 정렬)
+          </UserMessageBubble>
+          <UserMessageBubble
+            images={[{ src: "https://placehold.co/120x120?text=img" }]}
+            onCopy={() => {}}
+          >
+            이미지 말풍선 + 텍스트 말풍선 분리 예시
           </UserMessageBubble>
         </div>
       </section>
