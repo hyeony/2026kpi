@@ -70,8 +70,8 @@ export function PromptInput({
     getStyleId: getPromptInputStyleId,
   });
 
-  // 클래스명 생성
   const p = COMPONENT_NAMES.PromptInput;
+  // className은 내부 클래스명 뒤에 공백으로 붙임
   const rootCls = [
     getClass(prefix, p),
     getClass(prefix, p, size),

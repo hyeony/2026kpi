@@ -21,7 +21,7 @@ export {
   removeAllStyles,
   cssObjectToString,
 } from "./utils/injectStyle";
-export type { CssObject, CssAtRuleBlock } from "./utils/injectStyle";
+export type { CssObject, CssNestedBlock } from "./utils/injectStyle";
 export { cn } from "./utils/cn";
 
 // Components
@@ -38,3 +38,6 @@ export type {
   UserMessageBubbleProps,
   AgentMessageBubbleProps,
 } from "./components/MessageBubble/MessageBubble.types";
+export { BottomPrompt } from "./components/Prompt/BottomPrompt/index";
+export { TopPrompt } from "./components/Prompt/TopPrompt/index";
+export type { PromptFile, PromptListItem } from "./components/Prompt/shared/types/common";

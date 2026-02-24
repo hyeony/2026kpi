@@ -31,7 +31,10 @@ export function MessageBlock({
     .filter(Boolean)
     .join(" ");
 
-  const mergedClassName = [rootCls, alignCls, className].filter(Boolean).join(" ");
+  // className은 내부 클래스명 뒤에 공백으로 붙임
+  const mergedClassName = [rootCls, alignCls, className]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className={mergedClassName}>

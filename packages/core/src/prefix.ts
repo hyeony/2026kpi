@@ -3,9 +3,7 @@
 declare const __BUILD_PREFIX__: string;
 
 export const BUILD_PREFIX: string =
-  typeof __BUILD_PREFIX__ !== "undefined"
-    ? __BUILD_PREFIX__
-    : "hnineds1"; // fallback (비-Vite 환경용)
+  typeof __BUILD_PREFIX__ !== 'undefined' ? __BUILD_PREFIX__ : 'hnineds1'; // fallback (비-Vite 환경용)
 
 /**
  * prefix와 나머지 parts를 모두 `-`로 연결하여 클래스명 생성
@@ -18,5 +16,5 @@ export const BUILD_PREFIX: string =
  * getClass("hnineds1", "btn", "icon", "active")  → "hnineds1-btn-icon-active"
  */
 export function getClass(prefix: string, ...parts: string[]): string {
-  return [prefix, ...parts].filter(Boolean).join("-");
+  return [prefix, ...parts].filter(Boolean).join('-');
 }

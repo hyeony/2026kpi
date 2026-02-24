@@ -11,6 +11,16 @@ const preview: Preview = {
     docs: {
       toc: true,
     },
+    options: {
+      storySort: {
+        order: [
+          "Docs",
+          ["Core", ["Changelog", "*"], "Styles", ["Changelog", "*"]],
+          "Release Notes",
+          "*",
+        ],
+      },
+    },
   },
 };
 

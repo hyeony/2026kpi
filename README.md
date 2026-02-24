@@ -168,23 +168,6 @@ function App() {
 }
 ```
 
-### Style Disconnection by Prefix
-
-`HnineDSProvider`로 `prefix`를 변경하면 클래스명이 달라져 기본 스타일이 자동으로 해제됩니다.
-퍼블리셔가 직접 스타일을 작성해야 하는 영역에서 활용합니다.
-
-```tsx
-import { HnineDSProvider, Button } from "@hnineds/styles";
-
-// prefix 기본값(hnineds1) → 스타일 자동 적용
-<Button variant="primary">스타일 있음</Button>
-
-// prefix 변경 → 클래스명이 custom-btn으로 바뀜 → 스타일 해제
-<HnineDSProvider prefix="custom">
-  <Button variant="primary">스타일 없음 (직접 작성)</Button>
-</HnineDSProvider>
-```
-
 ### Provider 선택적 사용
 
 prefix를 변경할 필요가 없다면 `HnineDSProvider`를 사용하지 않아도 됩니다.

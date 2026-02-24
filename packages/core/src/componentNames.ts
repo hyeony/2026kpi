@@ -11,6 +11,8 @@ export const COMPONENT_NAMES = {
   Button: "btn",
   Input: "input",
   PromptInput: "prompt",
+  BottomPrompt: "bottom-prompt",
+  TopPrompt: "top-prompt",
   MessageBubble: "message-bubble",
 } as const;
 

@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { ButtonPage } from "./pages/ButtonPage";
 import { PromptInputPage } from "./pages/PromptInputPage";
 import { MessageBubblePage } from "./pages/MessageBubblePage";
+import { BottomPromptPage } from "./pages/BottomPromptPage";
+import { TopPromptPage } from "./pages/TopPromptPage";
 
 // --- 타입 ---
-type PageId = "button" | "prompt-input" | "message-bubble";
+type PageId = "button" | "prompt-input" | "message-bubble" | "bottom-prompt" | "top-prompt";
 
 interface NavItem {
   id: PageId;
@@ -14,16 +16,20 @@ interface NavItem {
 
 // --- 네비게이션 목록: 컴포넌트 추가 시 여기에 한 줄만 추가 ---
 const NAV_ITEMS: NavItem[] = [
-  { id: "message-bubble", label: "MessageBubble", description: "User/Agent 말풍선 · 액션" },
   { id: "button", label: "Button", description: "variant · size · icon" },
   { id: "prompt-input", label: "PromptInput", description: "AI 입력창 · size · actions" },
+  { id: "message-bubble", label: "MessageBubble", description: "User/Agent · 이미지 · 파일 · 편집모드" },
+  { id: "bottom-prompt", label: "BottomPrompt", description: "채팅 입력창 · 파일 · 아이콘" },
+  { id: "top-prompt", label: "TopPrompt", description: "검색형 입력창 · 로고 · 드롭다운" },
 ];
 
 // --- 페이지 라우팅: 컴포넌트 추가 시 여기에 한 줄만 추가 ---
 const PAGES: Record<PageId, React.ComponentType> = {
-  "message-bubble": MessageBubblePage,
   "button": ButtonPage,
   "prompt-input": PromptInputPage,
+  "message-bubble": MessageBubblePage,
+  "bottom-prompt": BottomPromptPage,
+  "top-prompt": TopPromptPage,
 };
 
 // --- 사이드바 스타일 ---
@@ -61,7 +67,7 @@ const navDescStyle: React.CSSProperties = {
 };
 
 export function App() {
-  const [activePage, setActivePage] = useState<PageId>("message-bubble");
+  const [activePage, setActivePage] = useState<PageId>("button");
   const PageComponent = PAGES[activePage];
 
   return (

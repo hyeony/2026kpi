@@ -27,6 +27,13 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
     },
     [`.${b}-root-right`]: {
       alignSelf: "flex-end",
+      [`.${b}-actions`]: {
+        opacity: 0,
+        transition: "opacity 0.15s ease",
+      },
+      ["&:hover ." + `${b}-actions`]: {
+        opacity: 1,
+      },
     },
     [`.${b}-content`]: {
       padding: "10px 14px",
@@ -118,7 +125,7 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       width: "200px",
       height: "200px",
     },
-    /** 편집 모드: 이미지 우측 상단 원형 X 삭제 버튼 */
+    /** 편집 모드: 이미지 우측 상단 원형 X 삭제 버튼 (이미지·파일 공통) */
     [`.${b}-user-img-delete-btn`]: {
       position: "absolute",
       top: "6px",
@@ -135,9 +142,9 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       justifyContent: "center",
       cursor: "pointer",
       transition: "background 0.15s",
-    },
-    [`.${b}-user-img-delete-btn:hover`]: {
-      backgroundColor: "rgba(0,0,0,0.7)",
+      "&:hover": {
+        backgroundColor: "rgba(0,0,0,0.7)",
+      },
     },
     /** 파일 개별 블록(말풍선 하나당 파일 하나). 너비 통일 */
     [`.${b}-user-file-item`]: {
@@ -202,9 +209,9 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       resize: "vertical",
       boxSizing: "border-box",
       outline: "none",
-    },
-    [`.${b}-edit-textarea:focus`]: {
-      borderColor: "#6b7280",
+      "&:focus": {
+        borderColor: "#6b7280",
+      },
     },
     [`.${b}-edit-actions`]: {
       display: "flex",
@@ -226,16 +233,16 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       backgroundColor: "#fff",
       color: "#111827",
       border: "1px solid #e5e7eb",
-    },
-    [`.${b}-edit-btn-cancel:hover`]: {
-      backgroundColor: "#f9fafb",
+      "&:hover": {
+        backgroundColor: "#f9fafb",
+      },
     },
     [`.${b}-edit-btn-confirm`]: {
       backgroundColor: "#111827",
       color: "#fff",
-    },
-    [`.${b}-edit-btn-confirm:hover`]: {
-      backgroundColor: "#374151",
+      "&:hover": {
+        backgroundColor: "#374151",
+      },
     },
     /** 편집 모드: 파일 삭제는 .user-img-delete-btn 재사용(이미지와 동일 원형 X) */
     [`.${b}-actions`]: {
@@ -245,14 +252,6 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       marginTop: "6px",
       paddingLeft: "4px",
       paddingRight: "4px",
-    },
-    /** User 메시지: 액션 버튼은 호버 시에만 표시 */
-    [`.${b}-root-right .${b}-actions`]: {
-      opacity: 0,
-      transition: "opacity 0.15s ease",
-    },
-    [`.${b}-root-right:hover .${b}-actions`]: {
-      opacity: 1,
     },
     [`.${b}-actions-right`]: {
       justifyContent: "flex-end",
@@ -270,14 +269,14 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       color: "#6b7280",
       cursor: "pointer",
       transition: "background 0.15s, color 0.15s",
-    },
-    [`.${b}-action-btn:hover`]: {
-      background: "#f3f4f6",
-      color: "#111827",
-    },
-    [`.${b}-action-btn:disabled`]: {
-      opacity: 0.5,
-      cursor: "not-allowed",
+      "&:hover": {
+        background: "#f3f4f6",
+        color: "#111827",
+      },
+      "&:disabled": {
+        opacity: 0.5,
+        cursor: "not-allowed",
+      },
     },
   };
 }

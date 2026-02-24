@@ -5,23 +5,36 @@ const styleRefCount = new Map<string, number>();
 // ─────────────────────────────────────────────────────────────────────────────
 // CssObject 타입 정의 및 직렬화 유틸리티
 // ─────────────────────────────────────────────────────────────────────────────
-import type { CSSProperties } from "react";
-
-/** @keyframes 등 중첩 at-rule 내부 블록 (inner-selector → CSSProperties) */
-export type CssAtRuleBlock = { [innerSelector: string]: CSSProperties };
+/**
+ * 중첩 셀렉터를 포함할 수 있는 CSS 블록 타입.
+ *
+ * 값이 string | number이면 CSS 속성, 객체이면 중첩 셀렉터 블록으로 처리된다.
+ *
+ * @example
+ * {
+ *   display: 'flex',
+ *   '.child': { color: 'red' },
+ *   '&:hover': { opacity: 0.8 },
+ * }
+ */
+export type CssNestedBlock = {
+  [propertyOrSelector: string]: string | number | CssNestedBlock;
+};
 
 /**
- * CSS를 객체 형태로 표현한 타입
+ * CSS를 객체 형태로 표현한 타입.
  *
- * 각 규칙의 선언 블록은 React.CSSProperties(camelCase) 를 사용한다.
+ * 최상위 키는 셀렉터 또는 at-rule이며, 값은 중첩 블록이다.
  * 직렬화 시 camelCase → kebab-case 변환이 자동으로 이루어진다.
  *
- * - 일반 규칙: `{ ['.btn']: { display: 'inline-flex', alignItems: 'center' } }`
+ * - 일반 규칙: `{ ['.btn']: { display: 'inline-flex' } }`
  * - Pseudo/복합 선택자: `{ ['.btn:hover']: { backgroundColor: '#eee' } }`
- * - 중첩 at-rule: `{ ['@keyframes spin']: { to: { transform: 'rotate(360deg)' } } }`
+ * - 중첩 자식 셀렉터: `{ ['.parent']: { display: 'flex', '.child': { color: 'red' } } }`
+ * - & 부모 참조: `{ ['.btn']: { '&:hover': { opacity: 0.8 } } }`
+ * - at-rule: `{ ['@keyframes spin']: { to: { transform: 'rotate(360deg)' } } }`
  */
 export type CssObject = {
-  [selectorOrAtRule: string]: CSSProperties | CssAtRuleBlock;
+  [selectorOrAtRule: string]: CssNestedBlock;
 };
 
 /** camelCase CSS 속성명을 kebab-case로 변환 (예: backgroundColor → background-color) */
@@ -29,16 +42,38 @@ function camelToKebab(str: string): string {
   return str.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 }
 
-/** 값이 모두 CSSProperties 객체(= 중첩 at-rule 블록)인지 판별 */
-function isAtRuleBlock(
-  value: CSSProperties | CssAtRuleBlock
-): value is CssAtRuleBlock {
-  const values = Object.values(value);
-  return (
-    values.length > 0 &&
-    typeof values[0] === "object" &&
-    values[0] !== null
-  );
+/**
+ * 셀렉터와 블록을 재귀적으로 직렬화한다.
+ * - primitive 값(string | number) → CSS 속성 선언
+ * - 객체 값 → 중첩 셀렉터 블록 (재귀)
+ * - `&` 포함 키 → 부모 셀렉터로 치환 (예: `&:hover` → `.btn:hover`)
+ */
+function serializeBlock(
+  selector: string,
+  block: CssNestedBlock,
+  output: string[]
+): void {
+  const declarations: string[] = [];
+  const nested: [string, CssNestedBlock][] = [];
+
+  for (const [key, value] of Object.entries(block)) {
+    if (typeof value === "object" && value !== null) {
+      nested.push([key, value]);
+    } else {
+      declarations.push(`  ${camelToKebab(key)}: ${value};`);
+    }
+  }
+
+  if (declarations.length > 0) {
+    output.push(`${selector} {\n${declarations.join("\n")}\n}`);
+  }
+
+  for (const [nestedKey, nestedBlock] of nested) {
+    const resolvedSelector = nestedKey.includes("&")
+      ? nestedKey.replace(/&/g, selector)
+      : `${selector} ${nestedKey}`;
+    serializeBlock(resolvedSelector, nestedBlock, output);
+  }
 }
 
 /**
@@ -47,31 +82,28 @@ function isAtRuleBlock(
  *
  * @example
  * cssObjectToString({
- *   '.btn': { display: 'inline-flex', alignItems: 'center' },
+ *   '.btn': { display: 'inline-flex', '&:hover': { opacity: 0.8 } },
  *   '@keyframes spin': { to: { transform: 'rotate(360deg)' } },
  * })
  */
 export function cssObjectToString(cssObj: CssObject): string {
   const parts: string[] = [];
 
-  for (const [selector, declarations] of Object.entries(cssObj)) {
-    if (isAtRuleBlock(declarations)) {
-      // @keyframes 등 중첩 블록
-      const innerRules = Object.entries(declarations)
-        .map(([innerSel, innerDecl]) => {
-          const props = Object.entries(innerDecl as CSSProperties)
+  for (const [selector, block] of Object.entries(cssObj)) {
+    if (selector.startsWith("@keyframes")) {
+      // @keyframes: 내부 키는 keyframe stop (from, to, 0% 등), 값은 flat CSS
+      const innerRules = Object.entries(block)
+        .map(([stop, props]) => {
+          const declarations = Object.entries(props as CssNestedBlock)
+            .filter(([, v]) => typeof v !== "object")
             .map(([prop, val]) => `    ${camelToKebab(prop)}: ${val};`)
             .join("\n");
-          return `  ${innerSel} {\n${props}\n  }`;
+          return `  ${stop} {\n${declarations}\n  }`;
         })
         .join("\n");
       parts.push(`${selector} {\n${innerRules}\n}`);
     } else {
-      // 일반 CSS 규칙
-      const props = Object.entries(declarations as CSSProperties)
-        .map(([prop, val]) => `  ${camelToKebab(prop)}: ${val};`)
-        .join("\n");
-      parts.push(`${selector} {\n${props}\n}`);
+      serializeBlock(selector, block, parts);
     }
   }
 
