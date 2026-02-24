@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 
-/** 메시지 정렬: agent 좌측, user 우측 */
 export type MessageBubbleAlign = "left" | "right";
 
 /** 레이아웃만 담당. content 시각(말풍선/블록)은 User/Agent에서 wrapper로 처리. */
@@ -17,11 +16,21 @@ export interface UserMessageImage {
   alt?: string;
 }
 
+/** 말풍선 내 파일 한 개. 파일명+확장자, 하단에 파일형식(옅은 색). 블록으로 세로 쌓임. */
+export interface UserMessageFile {
+  /** 파일명 + 확장자 (예: "보고서.pdf"). 최대 2줄 말줄임 */
+  fileName: string;
+  /** 파일형식 라벨 (예: "PDF 문서"). 옅은 색으로 하단 표시 */
+  fileType?: string;
+}
+
 /** User 말풍선 액션: 복사, 편집(콜백만), 북마크. 표시 여부(showX)와 동작(onX) 분리. */
 export interface UserMessageBubbleProps {
   children?: ReactNode;
   /** 말풍선 내부 이미지. 1장: 정사각(200×200), 2장~: 120×120 그리드. 크기는 UI에서 통일 */
   images?: UserMessageImage[];
+  /** 말풍선 내부 파일. 블록 형태로 세로 쌓임. 이미지와 별도 말풍선 가능 */
+  files?: UserMessageFile[];
   /** 복사 버튼 표시 @default true */
   showCopy?: boolean;
   /** 복사 클릭 (없으면 내부 기본 동작 또는 noop) */

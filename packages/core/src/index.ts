@@ -34,6 +34,7 @@ export type {
   MessageBlockProps,
   MessageBubbleAlign,
   UserMessageImage,
+  UserMessageFile,
   UserMessageBubbleProps,
   AgentMessageBubbleProps,
 } from "./components/MessageBubble/MessageBubble.types";

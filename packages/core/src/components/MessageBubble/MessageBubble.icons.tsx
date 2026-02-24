@@ -56,3 +56,23 @@ export function RefreshIcon() {
     </svg>
   );
 }
+
+/** 파일 첨부용 직사각형(문서) 아이콘 */
+export function FileIcon() {
+  return (
+    <svg
+      width="36"
+      height="44"
+      viewBox="0 0 36 44"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M4 2h20l8 8v32H4V2z" />
+      <path d="M24 2v8h8" />
+    </svg>
+  );
+}

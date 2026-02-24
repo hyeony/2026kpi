@@ -37,6 +37,11 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       backgroundColor: "#f8f7fa",
       borderRadius: "16px 16px 4px 16px",
     },
+    /** 사용자 파일 블록: 말풍선 X, 전체 동일 radius + 옅은 배경 */
+    [`.${b}-content-user-file`]: {
+      borderRadius: "12px",
+      backgroundColor: "rgba(0,0,0,0.02)",
+    },
     [`.${b}-content-agent`]: {
       borderRadius: "12px",
     },
@@ -94,6 +99,43 @@ export function getMessageBubbleStyles(prefix: string): CssObject {
       overflow: "hidden",
       borderRadius: "6px",
       display: "block",
+    },
+    /** 파일 개별 블록(말풍선 하나당 파일 하나). 리스트 래퍼 없음 */
+    [`.${b}-user-file-item`]: {
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "10px",
+      minWidth: 0,
+      maxWidth: "280px",
+      boxSizing: "border-box",
+    },
+    [`.${b}-user-file-icon`]: {
+      flexShrink: 0,
+      width: "36px",
+      height: "44px",
+      color: "#6b7280",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    [`.${b}-user-file-body`]: {
+      flex: 1,
+      minWidth: 0,
+    },
+    [`.${b}-user-file-name`]: {
+      fontSize: "14px",
+      lineHeight: 1.4,
+      color: "#111827",
+      overflow: "hidden",
+      display: "-webkit-box",
+      WebkitLineClamp: 2,
+      WebkitBoxOrient: "vertical",
+      wordBreak: "break-all",
+    },
+    [`.${b}-user-file-type`]: {
+      fontSize: "12px",
+      color: "#9ca3af",
+      marginTop: "2px",
     },
     [`.${b}-actions`]: {
       display: "flex",

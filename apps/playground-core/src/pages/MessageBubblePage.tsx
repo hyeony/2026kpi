@@ -114,6 +114,31 @@ export function MessageBubblePage() {
       </section>
 
       <section style={sectionStyle}>
+        <h2>User 메시지 — 말풍선 내 파일 첨부</h2>
+        <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "16px" }}>
+          파일은 개별 블록(파일 하나당 말풍선 하나). 왼쪽 파일 아이콘, 오른쪽 파일명(2줄 말줄임) + 하단 파일형식(옅은 색). 이미지 → 파일들 → 텍스트 순으로 말풍선 분리.
+        </p>
+        <div style={chatContainerStyle}>
+          <UserMessageBubble
+            files={[
+              { fileName: "보고서.pdf", fileType: "PDF 문서" },
+              { fileName: "2024_프로젝트_요약_및_결과_정리_문서.docx", fileType: "Word 문서" },
+            ]}
+            onCopy={() => {}}
+          >
+            파일만 (2개 파일 = 2개 말풍선)
+          </UserMessageBubble>
+          <UserMessageBubble
+            images={[{ src: "https://placehold.co/200x200?text=IMG" }]}
+            files={[{ fileName: "첨부.pdf", fileType: "PDF" }]}
+            onCopy={() => {}}
+          >
+            이미지 말풍선 → 파일 말풍선 → 텍스트 말풍선
+          </UserMessageBubble>
+        </div>
+      </section>
+
+      <section style={sectionStyle}>
         <h2>커스텀 prefix</h2>
         <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "16px" }}>
           HnineDSProvider로 prefix를 바꾸면 클래스명이 custom-message-bubble-* 로 적용됩니다.
