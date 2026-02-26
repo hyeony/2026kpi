@@ -90,6 +90,42 @@ function EditModeImageDemo() {
   );
 }
 
+function EditModeSingleImageDemo() {
+  const [isEditing, setIsEditing] = useState(false);
+  const [text, setText] = useState("사진 하나 올렸어요");
+  const [images, setImages] = useState<{ src: string; alt?: string }[]>([
+    { src: "https://placehold.co/280x180?text=가로형" },
+  ]);
+
+  return (
+    <>
+      {!isEditing ? (
+        <UserMessageBubble
+          images={images}
+          editInitialText={text}
+          onCopy={() => {}}
+          onEdit={() => setIsEditing(true)}
+          onBookmark={() => {}}
+        >
+          {text}
+        </UserMessageBubble>
+      ) : (
+        <UserMessageBubble
+          isEditing
+          images={images}
+          editInitialText={text}
+          onCancelEdit={() => setIsEditing(false)}
+          onConfirmEdit={(nextText) => {
+            setText(nextText);
+            setIsEditing(false);
+          }}
+          onDeleteImage={(i) => setImages((prev) => prev.filter((_, idx) => idx !== i))}
+        />
+      )}
+    </>
+  );
+}
+
 export function MessageBubblePage() {
   return (
     <>
@@ -132,16 +168,24 @@ export function MessageBubblePage() {
       <section style={sectionStyle}>
         <h2>User 메시지 — 말풍선 내 이미지</h2>
         <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "16px" }}>
-          1장: 정사각(200×200). 2장~: 120×120 그리드. 크기는 말풍선에서 강제. 이미지+텍스트 동시 시 이미지 말풍선 아래 텍스트 말풍선으로 분리.
+          1장: 비율에 따라 가로형(landscape) 또는 세로형(portrait). 2장~: 120×120 그리드. 이미지+텍스트 동시 시 이미지 말풍선 아래 텍스트 말풍선으로 분리.
         </p>
         <div style={chatContainerStyle}>
           <UserMessageBubble
-            images={[{ src: "https://placehold.co/200x200?text=1" }]}
+            images={[{ src: "https://placehold.co/280x180?text=가로" }]}
             onCopy={() => {}}
             onEdit={() => {}}
             onBookmark={() => {}}
           >
-            이미지 1장 (정사각 고정)
+            이미지 1장 (가로형)
+          </UserMessageBubble>
+          <UserMessageBubble
+            images={[{ src: "https://placehold.co/180x280?text=세로" }]}
+            onCopy={() => {}}
+            onEdit={() => {}}
+            onBookmark={() => {}}
+          >
+            이미지 1장 (세로형)
           </UserMessageBubble>
           <UserMessageBubble
             images={[
@@ -221,6 +265,7 @@ export function MessageBubblePage() {
         <div style={chatContainerStyle}>
           <EditModeDemo />
           <EditModeImageDemo />
+          <EditModeSingleImageDemo />
         </div>
       </section>
 

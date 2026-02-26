@@ -27,6 +27,29 @@ function filterValidFiles(list: UserMessageFile[] | undefined): UserMessageFile[
   );
 }
 
+/** 단일 이미지 비율: 가로가 길면 "landscape", 세로가 길거나 같으면 "portrait". 로드 전엔 "portrait" 기본 */
+function useImageAspect(src: string | undefined): "landscape" | "portrait" {
+  const [aspect, setAspect] = useState<"landscape" | "portrait">("portrait");
+  useEffect(() => {
+    if (!src?.trim()) {
+      setAspect("portrait");
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      setAspect(img.naturalWidth > img.naturalHeight ? "landscape" : "portrait");
+    };
+    img.onerror = () => setAspect("portrait");
+    img.src = src;
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+      img.src = "";
+    };
+  }, [src]);
+  return aspect;
+}
+
 /**
  * 사용자 메시지: 항상 우측 정렬, 말풍선 스타일.
  * 이미지: 1장=정사각(200×200), 2장~=120×120 그리드. 파일: 블록으로 세로 쌓임.
@@ -60,6 +83,9 @@ export function UserMessageBubble({
   const hasFiles = validFiles.length > 0;
   const hasTextContent = hasRenderableContent(children);
 
+  /** 단일 이미지일 때만 사용. 가로/세로 비율에 따라 horizon vs portrait 클래스 적용 */
+  const singleImageAspect = useImageAspect(validImages[0]?.src);
+
   const [draftText, setDraftText] = useState(editInitialText);
   useEffect(() => {
     if (isEditing) setDraftText(editInitialText);
@@ -75,11 +101,14 @@ export function UserMessageBubble({
     const imageBlockEditing = hasImages ? (
       <div className={cls("user-img-wrap")}>
         {validImages.length === 1 ? (
-          <div className={cn(cls("user-img-edit-item-wrap"), cls("user-img-single-square-wrap"))}>
+          <div className={cls("user-img-edit-item-wrap")}>
             <img
               src={validImages[0].src}
               alt={validImages[0].alt ?? ""}
-              className={cls("user-img-single-square")}
+              className={cn(
+                cls("user-img-single"),
+                singleImageAspect === "landscape" ? cls("user-img-single-horizon") : cls("user-img-single-portrait")
+              )}
             />
             <button
               type="button"
@@ -213,7 +242,10 @@ export function UserMessageBubble({
           <img
             src={validImages[0].src}
             alt={validImages[0].alt ?? ""}
-            className={cls("user-img-single-square")}
+            className={cn(
+              cls("user-img-single"),
+              singleImageAspect === "landscape" ? cls("user-img-single-horizon") : cls("user-img-single-portrait")
+            )}
           />
         ) : (
           <div
