@@ -1,0 +1,134 @@
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+}
+
+.badge.good {
+  background: #ecfdf5;
+  color: var(--color-good);
+}
+
+.badge.fair {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.badge.poor {
+  background: var(--color-critical-bg);
+  color: var(--color-critical);
+}
+
+.scoreRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.ring {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.bg {
+  fill: none;
+  stroke: #f1f5f9;
+  stroke-width: 8;
+}
+
+.progress {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.progress.good {
+  stroke: var(--color-good);
+}
+
+.progress.fair {
+  stroke: var(--color-fair);
+}
+
+.progress.poor {
+  stroke: var(--color-poor);
+}
+
+.scoreValue {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.number {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.unit {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 0.125rem;
+}
+
+.summary h4 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.summary p {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+@media (min-width: 480px) {
+  .scoreRow {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .summary {
+    flex: 1;
+  }
+}
