@@ -142,7 +142,7 @@ export function MemberManager({ companyName, profiles, meId, onAdd, onUpdate, on
           </label>
           <DeptSelect value={department} onChange={setDepartment} />
           <DrinkInputs drinks={drinks} onChange={setDrinks} />
-          <button type="button" className="btn btn--cta btn--block" onClick={handleAdd}>
+          <button type="button" className="btn btn--dark btn--block" onClick={handleAdd}>
             <PlusIcon size={16} />
             구성원 추가
           </button>
@@ -176,7 +176,7 @@ export function MemberManager({ companyName, profiles, meId, onAdd, onUpdate, on
                   <DeptSelect value={editDepartment} onChange={setEditDepartment} />
                   <DrinkInputs drinks={editDrinks} onChange={setEditDrinks} />
                   <div className="btn-row">
-                    <button type="button" className="btn btn--cta" onClick={commitEdit}>
+                    <button type="button" className="btn btn--dark" onClick={commitEdit}>
                       저장
                     </button>
                     <button type="button" className="btn btn--ghost" onClick={() => setEditingId(null)}>

@@ -32,9 +32,9 @@
   height: 40px;
   display: grid;
   place-items: center;
-  background: var(--primary-light);
+  background: var(--surface-2);
   border-radius: 10px;
-  color: var(--primary);
+  color: var(--text);
   margin-bottom: 1.25rem;
 }
 
@@ -118,10 +118,10 @@
   height: 44px;
   display: grid;
   place-items: center;
-  background: var(--primary-light);
+  background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 12px;
-  color: var(--primary);
+  color: var(--text);
 }
 
 .hero__brand h1 {
@@ -156,14 +156,14 @@
 }
 
 .stat-pill--accent {
-  background: var(--primary-light);
-  border-color: var(--accent-glow);
+  background: var(--surface-2);
+  border-color: var(--border);
 }
 
 .stat-pill__value {
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--primary);
+  color: var(--text);
   line-height: 1.2;
 }
 
@@ -207,9 +207,9 @@
   height: 36px;
   display: grid;
   place-items: center;
-  background: var(--primary-light);
+  background: var(--surface-2);
   border-radius: 10px;
-  color: var(--primary);
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -316,8 +316,8 @@
 
 .meeting-item__select.is-active,
 .project-item__select.is-active {
-  background: var(--primary-light);
-  color: var(--primary);
+  background: var(--selected-bg);
+  color: var(--text);
 }
 
 .meeting-item__name,
@@ -339,8 +339,8 @@
 
 .meeting-item__select.is-active .meeting-item__count,
 .project-item__select.is-active .project-item__count {
-  background: var(--primary-light);
-  color: var(--primary);
+  background: var(--surface);
+  color: var(--text-muted);
 }
 
 .meeting-item__actions,
@@ -489,6 +489,17 @@
   cursor: not-allowed;
 }
 
+.btn--dark {
+  background: var(--text);
+  border-color: var(--text);
+  color: #fff;
+}
+
+.btn--dark:hover:not(:disabled) {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
 .btn--ghost {
   background: transparent;
   border-color: var(--border);
@@ -513,7 +524,7 @@
   height: 40px;
   padding: 0;
   border-radius: 50%;
-  background: var(--cta);
+  background: var(--text);
   border: none;
   color: #fff;
   flex-shrink: 0;
@@ -538,8 +549,8 @@
 }
 
 .icon-btn:hover {
-  background: var(--primary-light);
-  color: var(--primary);
+  background: var(--surface-2);
+  color: var(--text);
 }
 
 .icon-btn--danger:hover {
@@ -609,8 +620,9 @@
 .drink-tag {
   font-size: 0.72rem;
   padding: 0.2rem 0.55rem;
-  background: var(--primary-light);
-  color: var(--primary);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
   border-radius: 999px;
   font-weight: 500;
 }
@@ -664,7 +676,7 @@
 .participation-count strong {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--primary);
+  color: var(--text);
   letter-spacing: -0.03em;
 }
 
@@ -712,8 +724,8 @@
 }
 
 .participation-item.is-joined {
-  background: var(--primary-light);
-  border-color: rgba(99, 102, 241, 0.35);
+  background: var(--selected-bg);
+  border-color: var(--selected-border);
 }
 
 .participation-item.is-disabled {
@@ -760,9 +772,9 @@
 }
 
 .check-circle.is-checked {
-  background: var(--cta);
-  border-color: var(--cta);
-  color: var(--cta-text);
+  background: var(--text);
+  border-color: var(--text);
+  color: #fff;
 }
 
 /* ── Order Preview ── */
@@ -770,36 +782,25 @@
   display: flex;
   align-items: baseline;
   gap: 0.15rem;
-  background: var(--primary-light);
+  background: var(--surface-2);
   padding: 0.4rem 0.85rem;
   border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
 }
 
 .order-badge__num {
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--primary);
+  color: var(--text);
   letter-spacing: -0.03em;
-}
-
-.order-badge__label {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-.order-preview__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
 }
 
 .order-total-pill {
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--primary);
-  background: var(--primary-light);
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   padding: 0.25rem 0.65rem;
   border-radius: 999px;
 }
@@ -1073,8 +1074,8 @@
 }
 
 .meeting-card.is-active {
-  border-color: var(--accent);
-  box-shadow: var(--shadow);
+  border-color: var(--selected-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .meeting-card__head {
@@ -1177,9 +1178,9 @@
 }
 
 .chip-picker__item:hover {
-  background: var(--primary-light);
-  border-color: rgba(99, 102, 241, 0.35);
-  color: var(--primary);
+  background: var(--selected-bg);
+  border-color: var(--selected-border);
+  color: var(--text);
 }
 
 .guest-form {
@@ -1207,12 +1208,13 @@
 }
 
 .guest-badge {
-  background: var(--primary-light);
-  color: var(--primary);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
 }
 
 .me-badge {
-  background: var(--cta);
+  background: var(--text);
   color: #fff;
 }
 
@@ -1260,9 +1262,9 @@
 }
 
 .drink-grid__item.is-active {
-  border-color: var(--accent);
-  background: var(--primary-light);
-  color: var(--primary);
+  border-color: var(--text);
+  background: var(--selected-bg);
+  color: var(--text);
 }
 
 .preferences-note {
@@ -1308,8 +1310,8 @@
 }
 
 .user-chip.is-active {
-  border-color: var(--accent);
-  background: var(--primary-light);
+  border-color: var(--selected-border);
+  background: var(--selected-bg);
 }
 
 /* ── Org order builder ── */
@@ -1398,8 +1400,8 @@
 }
 
 .org-member.is-selected {
-  background: var(--primary-light);
-  border-color: rgba(64, 252, 141, 0.45);
+  background: var(--selected-bg);
+  border-color: var(--selected-border);
 }
 
 .org-member.is-disabled {
@@ -1445,7 +1447,7 @@
 }
 
 .guest-add-trigger:hover {
-  color: var(--accent-dark);
+  color: var(--text);
 }
 
 .guest-list-card {
@@ -1505,10 +1507,11 @@
 .dock-chip {
   font-size: 0.72rem;
   padding: 0.2rem 0.5rem;
-  background: var(--primary-light);
-  color: var(--accent-dark);
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
   border-radius: 999px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .order-dock__empty {
@@ -1539,16 +1542,6 @@
   border-radius: var(--radius-sm);
   background: var(--surface);
   color: var(--text);
-}
-
-.drink-tag {
-  background: var(--primary-light);
-  color: var(--accent-dark);
-}
-
-.me-badge {
-  background: var(--cta);
-  color: var(--cta-text);
 }
 
 @media (min-width: 481px) {

@@ -107,7 +107,7 @@ export function PreferencesPanel({ profile, onSave, compact = false }: Props) {
 
         <button
           type="button"
-          className={`btn btn--cta btn--block${saved ? ' is-success' : ''}`}
+          className={`btn btn--dark btn--block${saved ? ' is-success' : ''}`}
           onClick={handleSave}
           disabled={!drinks[0]?.trim()}
         >

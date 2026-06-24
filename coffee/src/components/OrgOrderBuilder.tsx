@@ -216,7 +216,7 @@ export function OrgOrderBuilder({
               onChange={(e) => setGuestDrink(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAddGuest()}
             />
-            <button type="button" className="btn btn--sm btn--cta" onClick={handleAddGuest}>
+            <button type="button" className="btn btn--sm" onClick={handleAddGuest}>
               추가
             </button>
             <button type="button" className="btn btn--sm btn--ghost" onClick={() => setGuestOpen(false)}>

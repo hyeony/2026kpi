@@ -14,17 +14,19 @@
   --text-on-dark: #f8fafc;
   --text-on-dark-muted: rgba(248, 250, 252, 0.65);
 
-  /* ── Brand ── */
+  /* ── Brand & accent (green = CTA only) ── */
   --primary: #0f172a;
   --primary-dark: #020617;
-  --primary-light: rgba(64, 252, 141, 0.12);
+  --primary-light: #f1f5f9;
+  --selected-bg: #f1f5f9;
+  --selected-border: #cbd5e1;
   --accent: #40fc8d;
-  --accent-dark: #1a9d5c;
-  --accent-glow: rgba(64, 252, 141, 0.22);
+  --accent-dark: #16a34a;
+  --accent-glow: rgba(15, 23, 42, 0.08);
 
-  /* ── Actions ── */
+  /* ── Actions — accent reserved for primary CTA ── */
   --cta: #40fc8d;
-  --cta-hover: #2be87a;
+  --cta-hover: #32e882;
   --cta-text: #0f172a;
 
   /* ── Semantic ── */
@@ -40,8 +42,8 @@
   /* ── Layout ── */
   --nav-bg: #ffffff;
   --nav-text: #64748b;
-  --nav-text-active: #1a9d5c;
-  --nav-active-bg: rgba(64, 252, 141, 0.15);
+  --nav-text-active: #0f172a;
+  --nav-active-bg: #f1f5f9;
   --header-bg: #ffffff;
 
   /* ── Elevation ── */
@@ -106,7 +108,7 @@ input {
 }
 
 input:focus {
-  border-color: var(--accent);
+  border-color: #94a3b8;
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
