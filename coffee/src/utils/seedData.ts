@@ -1,6 +1,85 @@
-export const SEED_VERSION = 5
+export const SEED_VERSION = 6
 export const ME_PROFILE_ID = 'profile-jihyun'
 
+/** 프로필별 AI 메모·취향 태그 시드 */
+export const PROFILE_AI_SEED: Record<
+  string,
+  { aiNotes: string; tasteTags?: string[] }
+> = {
+  [ME_PROFILE_ID]: {
+    tasteTags: ['디카페인', '산미 선호', '얼음 적게'],
+    aiNotes:
+      '산미 있는 아메리카노를 좋아해요. 디카페인만 마시고, 카페인은 오후 3시 이후엔 피해요. 라떼도 좋아하지만 우유는 적게 넣어주세요.',
+  },
+  'profile-minsu': {
+    tasteTags: ['샷 추가', 'ICE'],
+    aiNotes: '아이스 아메리카노에 샷 하나 추가해 주세요. 당도 낮은 음료만 마셔요.',
+  },
+  'profile-soyeon': {
+    tasteTags: ['오트 우유', '라떼'],
+    aiNotes: '카페라떼는 오트 우유로 부탁해요. 시럽은 넣지 않아요.',
+  },
+  'profile-junho': {
+    tasteTags: ['HOT', '진하게'],
+    aiNotes: '따뜻한 아메리카노를 진하게 마셔요. 아이스는 잘 안 마십니다.',
+  },
+  'profile-doyoon-k': {
+    tasteTags: ['디카페인'],
+    aiNotes: '디카페인 아메리카노만 마셔요. 카페인 민감해서 오후 주문은 피해 주세요.',
+  },
+  'profile-chaerin-y': {
+    tasteTags: ['저카페인', '라떼'],
+    aiNotes: '바닐라 라떼 좋아해요. 휘핑은 빼 주시면 좋아요.',
+  },
+  'profile-seokjin-h': {
+    tasteTags: ['ICE', '콜드브루'],
+    aiNotes: '콜드브루 선호해요. 너무 단 음료는 싫어해요.',
+  },
+  'profile-kyungho-m': {
+    tasteTags: ['HOT', '에스프레소'],
+    aiNotes: '에스프레소나 아메리카노 HOT 위주예요. 라떼는 가끔만 마셔요.',
+  },
+  'profile-areum-s': {
+    tasteTags: ['플랫 화이트', 'ICE'],
+    aiNotes: '플랫 화이트를 자주 마셔요. 우유 거품 많은 음료 좋아해요.',
+  },
+  'profile-seoyeon-k': {
+    tasteTags: ['저당', 'ICE'],
+    aiNotes: '아이스 아메리카노 기본이에요. 시럽·당 추가는 안 해 주세요.',
+  },
+  'profile-junhyuk-l': {
+    tasteTags: ['HOT', '라떼'],
+    aiNotes: '카페라떼 HOT을 주로 마셔요. 두유 음료는 잘 안 마십니다.',
+  },
+  'profile-yejun-s': {
+    tasteTags: ['ICE', '티'],
+    aiNotes: '아이스 티나 콜드브루를 선호해요. 카페인 많은 음료는 오후에 피해요.',
+  },
+  'profile-narae-k': {
+    tasteTags: ['라떼', 'ICE'],
+    aiNotes: '바닐라 라떼 ICE 좋아해요. 디카페인 가능하면 디카페인으로 부탁해요.',
+  },
+  'profile-taeyoung-k': {
+    tasteTags: ['HOT', '아메리카노'],
+    aiNotes: '회의 전엔 아메리카노 HOT 한 잔이에요. 샷 추가는 가끔만 해요.',
+  },
+  'profile-sungmin-r': {
+    tasteTags: ['ICE', '콜드브루'],
+    aiNotes: '콜드브루나 아이스 아메리카노 위주예요. 달달한 음료는 잘 안 마셔요.',
+  },
+  'profile-hyunwoo-k': {
+    tasteTags: ['에스프레소', 'HOT'],
+    aiNotes: '에스프레소 쇼트 선호해요. 라떼류는 거의 안 마십니다.',
+  },
+  'profile-jieun-l': {
+    tasteTags: ['라떼', '저당'],
+    aiNotes: '카페라떼나 돌체 라떼를 좋아해요. 시럽은 반 펌프만 넣어 주세요.',
+  },
+  'profile-woojin-c': {
+    tasteTags: ['ICE', '샷 추가'],
+    aiNotes: '아이스 아메리카노에 샷 추가가 기본이에요. HOT은 잘 안 마셔요.',
+  },
+}
 const DRINK_POOL = [
   '아이스 아메리카노',
   '아메리카노 HOT',

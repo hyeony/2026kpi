@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { SendIcon } from './Icons'
 import { AI_SUGGESTIONS } from '../utils/aiShuttle'
 
 interface Props {
@@ -21,20 +22,18 @@ export function AiShuttlePanel({ onSubmit, isThinking, lastReply }: Props) {
     <section className="ai-shuttle card">
       <div className="ai-shuttle__head">
         <span className="ai-shuttle__badge" aria-hidden>
-          🤖
+          ☕
         </span>
         <div>
-          <h2 className="ai-shuttle__title">AI Shuttle</h2>
-          <p className="ai-shuttle__question">누구랑 커피 마실래?</p>
+          <p className="ai-shuttle__title">AI가 그룹을 골라줘요</p>
+          <h2 className="ai-shuttle__question">누구랑 커피 마실까?</h2>
         </div>
       </div>
-
-      <p className="ai-shuttle__prompt">무엇을 도와드릴까요?</p>
 
       <div className="ai-shuttle__input-wrap">
         <input
           className="ai-shuttle__input"
-          placeholder="예: 오늘 FE팀 주문 만들어줘"
+          placeholder="오늘 FE팀 주문 만들어줘"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
@@ -45,8 +44,9 @@ export function AiShuttlePanel({ onSubmit, isThinking, lastReply }: Props) {
           className="btn btn--cta ai-shuttle__send"
           onClick={handleSubmit}
           disabled={!input.trim() || isThinking}
+          aria-label="보내기"
         >
-          {isThinking ? '…' : '실행'}
+          <SendIcon size={18} />
         </button>
       </div>
 
@@ -59,9 +59,6 @@ export function AiShuttlePanel({ onSubmit, isThinking, lastReply }: Props) {
               onClick={() => onSubmit(suggestion)}
               disabled={isThinking}
             >
-              <span className="ai-suggestion__check" aria-hidden>
-                ✔
-              </span>
               {suggestion}
             </button>
           </li>

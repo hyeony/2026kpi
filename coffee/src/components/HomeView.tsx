@@ -141,7 +141,7 @@ export function HomeView({
 
       {selectedCount > 0 && (
         <div className="selected-strip card">
-          <span className="card-label">선택된 그룹 · {selectedCount}명</span>
+          <span className="card-label">이번에 함께하는 사람 · {selectedCount}명</span>
           <div className="selected-strip__avatars">
             {selectedProfiles.map((p) => (
               <div key={p.id} className="selected-strip__person" title={p.name}>
@@ -214,7 +214,7 @@ export function HomeView({
               {showMessage ? '주문 문구 접기' : '주문 문구 미리보기'}
             </button>
             {showMessage && (
-              <pre className="order-message order-message--dock">{orderMessage}</pre>
+              <p className="order-message order-message--dock">{orderMessage}</p>
             )}
 
             <button

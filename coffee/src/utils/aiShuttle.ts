@@ -52,26 +52,50 @@ export const FAVORITE_GROUPS: FavoriteGroup[] = [
 
 export const ORDER_HISTORY: HistorySnapshot[] = [
   {
-    id: 'hist-today',
+    id: 'hist-today-1',
     period: 'today',
     label: '오늘',
-    dateLabel: '오늘 오전',
+    dateLabel: '오늘 10:30 · FE 스탠드업',
     memberIds: ['profile-jihyun', 'profile-minsu', 'profile-soyeon'],
     summary: '아이스 아메리카노 ×2 · 바닐라 라떼 ×1',
   },
   {
-    id: 'hist-yesterday',
-    period: 'yesterday',
-    label: '어제',
-    dateLabel: '어제 15:20',
-    memberIds: ['profile-jihyun', 'profile-minsu', 'profile-junho', 'profile-chaerin-y'],
-    summary: '아이스 아메리카노 ×2 · 카페라떼 ×1 · 콜드브루 ×1',
+    id: 'hist-today-2',
+    period: 'today',
+    label: '오늘',
+    dateLabel: '오늘 14:15 · PM 체크인',
+    memberIds: ['profile-taeyoung-k', 'profile-dahey-n', 'profile-jihwan-b'],
+    summary: '아메리카노 HOT ×2 · 카페라떼 HOT ×1',
   },
   {
-    id: 'hist-lastweek',
+    id: 'hist-yesterday-1',
+    period: 'yesterday',
+    label: '어제',
+    dateLabel: '어제 15:20 · Dev Daily',
+    memberIds: ['profile-jihyun', 'profile-minsu', 'profile-junho', 'profile-doyoon-k'],
+    summary: '아이스 아메리카노 ×2 · 카페라떼 HOT ×1 · 아메리카노 HOT ×1',
+  },
+  {
+    id: 'hist-yesterday-2',
+    period: 'yesterday',
+    label: '어제',
+    dateLabel: '어제 11:00 · Design Sync',
+    memberIds: ['profile-chaerin-y', 'profile-kyungho-m', 'profile-areum-s', 'profile-yeeun-d'],
+    summary: '바닐라 라떼 ×2 · 플랫 화이트 ×1 · 아이스 아메리카노 ×1',
+  },
+  {
+    id: 'hist-yesterday-3',
+    period: 'yesterday',
+    label: '어제',
+    dateLabel: '어제 09:40 · Strategy 팀',
+    memberIds: ['profile-seoyeon-k', 'profile-junhyuk-l', 'profile-jiwon-p'],
+    summary: '아이스 아메리카노 ×2 · 카페라떼 HOT ×1',
+  },
+  {
+    id: 'hist-lastweek-1',
     period: 'lastweek',
     label: '지난주',
-    dateLabel: '6/17 (월)',
+    dateLabel: '6/17 (월) · 전사 주간 회의',
     memberIds: [
       'profile-jihyun',
       'profile-minsu',
@@ -80,9 +104,40 @@ export const ORDER_HISTORY: HistorySnapshot[] = [
       'profile-chaerin-y',
       'profile-kyungho-m',
     ],
-    summary: '6명 · 8잔',
+    summary: '6명 · 아이스 아메리카노 ×3 · 카페라떼 ×2 · 콜드브루 ×1',
+  },
+  {
+    id: 'hist-lastweek-2',
+    period: 'lastweek',
+    label: '지난주',
+    dateLabel: '6/18 (화) · Interaction 리뷰',
+    memberIds: ['profile-yejun-s', 'profile-narae-k', 'profile-chaewon-i', 'profile-geonwoo-n'],
+    summary: '바닐라 라떼 ×2 · 카페라떼 ICE ×1 · 아이스 티 ×1',
+  },
+  {
+    id: 'hist-lastweek-3',
+    period: 'lastweek',
+    label: '지난주',
+    dateLabel: '6/19 (수) · C-level 미팅',
+    memberIds: ['profile-hyunwoo-k', 'profile-seojun-p', 'profile-jieun-l', 'profile-taeyoung-k'],
+    summary: '에스프레소 ×2 · 아메리카노 HOT ×1 · 카페라떼 HOT ×1',
+  },
+  {
+    id: 'hist-lastweek-4',
+    period: 'lastweek',
+    label: '지난주',
+    dateLabel: '6/20 (목) · Visual 팀',
+    memberIds: ['profile-kyungho-m', 'profile-areum-s', 'profile-siu-b', 'profile-sora-j', 'profile-yula-h'],
+    summary: '플랫 화이트 ×2 · 아이스 아메리카노 ×2 · 에스프레소 ×1',
   },
 ]
+
+/** 기간 탭 순서 */
+export const HISTORY_PERIODS: HistorySnapshot['period'][] = ['today', 'yesterday', 'lastweek']
+
+export function historyLabelForPeriod(period: HistorySnapshot['period']): string {
+  return ORDER_HISTORY.find((h) => h.period === period)?.label ?? period
+}
 
 const DEPT_ALIASES: Record<string, string[]> = {
   fe: ['Development'],
@@ -128,7 +183,7 @@ export async function processAiCommand(
   const lower = trimmed.toLowerCase()
 
   if (lower.includes('지난주') || lower.includes('동일') || lower.includes('같게')) {
-    const snap = ORDER_HISTORY.find((h) => h.period === 'lastweek')!
+    const snap = ORDER_HISTORY.find((h) => h.id === 'hist-lastweek-1')!
     const valid = snap.memberIds.filter((id) => profiles.some((p) => p.id === id))
     return {
       memberIds: valid,

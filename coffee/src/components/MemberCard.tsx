@@ -55,7 +55,7 @@ export function MemberCard({ profile, isMe }: Props) {
 
           {hasAiNotes && (
             <p className="member-card-v2__ai" title={profile.aiNotes}>
-              AI 메모 있음
+              {profile.aiNotes}
             </p>
           )}
         </div>

@@ -3,6 +3,7 @@ import { todayString } from './date'
 import {
   GROUP_SEEDS,
   ME_PROFILE_ID,
+  PROFILE_AI_SEED,
   SEED_VERSION,
   allMemberSeeds,
   drinksForMember,
@@ -25,31 +26,21 @@ export function createSeedState(): AppState {
   for (const member of allMemberSeeds()) {
     if (seen.has(member.id)) continue
     seen.add(member.id)
+    const aiSeed = PROFILE_AI_SEED[member.id]
     profiles.push({
       id: member.id,
       name: member.name,
       department: DEPT_BY_MEMBER.get(member.id) ?? 'Development',
       preferredDrinks: drinksForMember(member),
-      tasteTags: [],
-      aiNotes: '',
+      tasteTags: aiSeed?.tasteTags ?? [],
+      aiNotes: aiSeed?.aiNotes ?? '',
     })
   }
-
-  const profilesWithMe = profiles.map((p) =>
-    p.id === ME_PROFILE_ID
-      ? {
-          ...p,
-          tasteTags: ['디카페인', '산미 선호', '얼음 적게'],
-          aiNotes:
-            '산미 있는 아메리카노를 좋아해요. 디카페인만 마시고, 카페인은 오후 3시 이후엔 피해요. 라떼도 좋아하지만 우유는 적게 넣어주세요.',
-        }
-      : p,
-  )
 
   return {
     companyName: 'H9',
     meId: ME_PROFILE_ID,
-    profiles: profilesWithMe,
+    profiles,
     orderSelection: {
       date: today,
       memberIds: [],

@@ -1,6 +1,11 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { FavoriteGroup, HistorySnapshot } from '../utils/aiShuttle'
-import { ORDER_HISTORY, FAVORITE_GROUPS } from '../utils/aiShuttle'
+import {
+  FAVORITE_GROUPS,
+  HISTORY_PERIODS,
+  ORDER_HISTORY,
+  historyLabelForPeriod,
+} from '../utils/aiShuttle'
 
 type Tab = 'favorite' | 'history'
 type HistoryPeriod = HistorySnapshot['period']
@@ -13,10 +18,14 @@ export function QuickPickPanel({ onApplyMemberIds }: Props) {
   const [tab, setTab] = useState<Tab>('favorite')
   const [historyPeriod, setHistoryPeriod] = useState<HistoryPeriod>('today')
 
-  const activeHistory = ORDER_HISTORY.find((h) => h.period === historyPeriod) ?? ORDER_HISTORY[0]
+  const periodHistories = useMemo(
+    () => ORDER_HISTORY.filter((h) => h.period === historyPeriod),
+    [historyPeriod],
+  )
 
   return (
     <section className="quick-pick">
+      <h2 className="quick-pick__heading">바로 불러오기</h2>
       <div className="quick-pick__tabs" role="tablist">
         <button
           type="button"
@@ -25,7 +34,7 @@ export function QuickPickPanel({ onApplyMemberIds }: Props) {
           className={`quick-pick__tab${tab === 'favorite' ? ' is-active' : ''}`}
           onClick={() => setTab('favorite')}
         >
-          ⭐ Favorite Group
+          즐겨찾기
         </button>
         <button
           type="button"
@@ -34,7 +43,7 @@ export function QuickPickPanel({ onApplyMemberIds }: Props) {
           className={`quick-pick__tab${tab === 'history' ? ' is-active' : ''}`}
           onClick={() => setTab('history')}
         >
-          History
+          최근 주문
         </button>
       </div>
 
@@ -52,28 +61,36 @@ export function QuickPickPanel({ onApplyMemberIds }: Props) {
       ) : (
         <>
           <div className="history-periods">
-            {ORDER_HISTORY.map((h) => (
+            {HISTORY_PERIODS.map((period) => (
               <button
-                key={h.period}
+                key={period}
                 type="button"
-                className={`history-period${historyPeriod === h.period ? ' is-active' : ''}`}
-                onClick={() => setHistoryPeriod(h.period)}
+                className={`history-period${historyPeriod === period ? ' is-active' : ''}`}
+                onClick={() => setHistoryPeriod(period)}
               >
-                {h.label}
+                {historyLabelForPeriod(period)}
               </button>
             ))}
           </div>
-          <button
-            type="button"
-            className="history-card card"
-            onClick={() => onApplyMemberIds(activeHistory.memberIds, activeHistory.label)}
-          >
-            <div className="history-card__head">
-              <strong>{activeHistory.dateLabel}</strong>
-              <span>{activeHistory.memberIds.length}명</span>
-            </div>
-            <p className="history-card__summary">{activeHistory.summary}</p>
-          </button>
+          <ul className="quick-pick__list">
+            {periodHistories.map((history) => (
+              <li key={history.id}>
+                <button
+                  type="button"
+                  className="history-card"
+                  onClick={() =>
+                    onApplyMemberIds(history.memberIds, history.dateLabel)
+                  }
+                >
+                  <div className="history-card__head">
+                    <strong>{history.dateLabel}</strong>
+                    <span>{history.memberIds.length}명</span>
+                  </div>
+                  <p className="history-card__summary">{history.summary}</p>
+                </button>
+              </li>
+            ))}
+          </ul>
         </>
       )}
     </section>
@@ -88,12 +105,12 @@ function FavoriteRow({
   onSelect: () => void
 }) {
   return (
-    <button type="button" className="favorite-row card" onClick={onSelect}>
+    <button type="button" className="favorite-row" onClick={onSelect}>
       <div>
         <strong>{group.name}</strong>
         <span>{group.tag ?? `${group.memberIds.length}명`}</span>
       </div>
-      <span className="favorite-row__action">불러오기</span>
+      <span className="favorite-row__action">선택</span>
     </button>
   )
 }
