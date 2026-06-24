@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { MemberManager } from './components/MemberManager'
 import { HomeView } from './components/HomeView'
 import { ProfileDrawer } from './components/ProfileDrawer'
-import { SideNav } from './components/SideNav'
+import { BottomNav } from './components/BottomNav'
 import { Avatar } from './components/Avatar'
 import { CoffeeIcon } from './components/Icons'
 import { useCoffeeShuttle } from './hooks/useCoffeeShuttle'
@@ -32,10 +32,13 @@ function App() {
   const openDrawer = (profile: Profile) => setDrawerProfileId(profile.id)
   const closeDrawer = () => setDrawerProfileId(null)
 
+  const selectedCount =
+    orderSelection.memberIds.length + orderSelection.guests.length
+  const isOrderMode = state.activeView === 'home' && selectedCount > 0
+  const showBottomNav = !isOrderMode
+
   return (
     <div className="app-shell">
-      <SideNav active={state.activeView} onChange={setActiveView} />
-
       <div className="app-body">
         <header className="hero hero--compact">
           <div className="hero__content">
@@ -64,7 +67,15 @@ function App() {
           </div>
         </header>
 
-        <main className={`main${state.activeView === 'home' ? ' main--home' : ''}`}>
+        <main
+          className={[
+            'main',
+            state.activeView === 'home' ? 'main--home' : '',
+            showBottomNav ? 'main--with-nav' : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+        >
           {state.activeView === 'home' && (
             <HomeView
               companyName={state.companyName}
@@ -91,6 +102,10 @@ function App() {
           )}
         </main>
       </div>
+
+      {showBottomNav && (
+        <BottomNav active={state.activeView} onChange={setActiveView} />
+      )}
 
       <ProfileDrawer
         profile={drawerProfile}

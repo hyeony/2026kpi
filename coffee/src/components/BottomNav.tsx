@@ -11,24 +11,21 @@ const NAV: { id: ViewId; label: string; Icon: typeof CoffeeIcon }[] = [
   { id: 'members', label: '구성원', Icon: UsersIcon },
 ]
 
-export function SideNav({ active, onChange }: Props) {
+export function BottomNav({ active, onChange }: Props) {
   return (
-    <nav className="side-nav" aria-label="메인 메뉴">
-      <div className="side-nav__brand" aria-hidden>
-        <CoffeeIcon size={22} />
-      </div>
-      <ul className="side-nav__list">
+    <nav className="bottom-nav" aria-label="메인 메뉴">
+      <ul className="bottom-nav__list">
         {NAV.map((item) => {
           const isActive = active === item.id
           return (
-            <li key={item.id}>
+            <li key={item.id} className="bottom-nav__item-wrap">
               <button
                 type="button"
-                className={`side-nav__item${isActive ? ' is-active' : ''}`}
+                className={`bottom-nav__item${isActive ? ' is-active' : ''}`}
                 onClick={() => onChange(item.id)}
-                title={item.label}
+                aria-current={isActive ? 'page' : undefined}
               >
-                <item.Icon size={20} />
+                <item.Icon size={22} />
                 <span>{item.label}</span>
               </button>
             </li>
