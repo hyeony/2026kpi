@@ -3,6 +3,8 @@ import type { OrderGuest, Profile } from '../types'
 export interface OrderItem {
   memberName: string
   drinks: string[]
+  tasteTags?: string[]
+  aiNotes?: string
   isGuest?: boolean
 }
 
@@ -10,6 +12,15 @@ export interface DrinkCount {
   drink: string
   count: number
   names: string[]
+}
+
+function formatMemberLine(item: OrderItem): string {
+  const tag = item.isGuest ? ' (게스트)' : ''
+  let line = `• ${item.memberName}${tag}: ${item.drinks.join(', ')}`
+  if (item.tasteTags && item.tasteTags.length > 0) {
+    line += ` (${item.tasteTags.join(' · ')})`
+  }
+  return line
 }
 
 export function buildOrderItems(
@@ -25,6 +36,8 @@ export function buildOrderItems(
     .map((p) => ({
       memberName: p.name,
       drinks: p.preferredDrinks.filter(Boolean),
+      tasteTags: p.tasteTags.filter(Boolean),
+      aiNotes: p.aiNotes.trim() || undefined,
     }))
     .filter((item) => item.drinks.length > 0)
 
@@ -81,8 +94,15 @@ export function formatOrderMessage(
 
   lines.push('[참여자별]')
   for (const item of items) {
-    const tag = item.isGuest ? ' (게스트)' : ''
-    lines.push(`• ${item.memberName}${tag}: ${item.drinks.join(', ')}`)
+    lines.push(formatMemberLine(item))
+  }
+
+  const notesBlock = items.filter((i) => i.aiNotes && !i.isGuest)
+  if (notesBlock.length > 0) {
+    lines.push('', '[AI 취향 메모]')
+    for (const item of notesBlock) {
+      lines.push(`• ${item.memberName}: ${item.aiNotes}`)
+    }
   }
 
   lines.push('', '[음료별 집계]')

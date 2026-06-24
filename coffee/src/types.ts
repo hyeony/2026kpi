@@ -3,6 +3,8 @@ export interface Profile {
   name: string
   department: string
   preferredDrinks: string[]
+  tasteTags: string[]
+  aiNotes: string
 }
 
 export interface OrderGuest {
@@ -26,7 +28,7 @@ export interface AppState {
   seedVersion?: number
 }
 
-export type ViewId = 'home' | 'members' | 'mypage'
+export type ViewId = 'home' | 'members'
 
 export interface DepartmentGroup {
   department: string

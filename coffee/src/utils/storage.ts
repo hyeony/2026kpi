@@ -1,4 +1,4 @@
-import type { AppState, LegacyAppState } from '../types'
+import type { AppState, LegacyAppState, ViewId } from '../types'
 import { todayString } from './date'
 import { SEED_VERSION, createSeedState } from './seed'
 
@@ -42,12 +42,18 @@ function normalizeOrderSelection(selection: AppState['orderSelection']): AppStat
 }
 
 export function normalizeState(state: AppState): AppState {
+  const activeView: ViewId =
+    state.activeView === 'members' ? 'members' : 'home'
+
   return {
     ...state,
+    activeView,
     profiles: state.profiles.map((p) => ({
       ...p,
       department: p.department || 'Development',
       preferredDrinks: p.preferredDrinks.filter(Boolean).slice(0, 2),
+      tasteTags: (p.tasteTags ?? []).slice(0, 8),
+      aiNotes: p.aiNotes ?? '',
     })),
     orderSelection: normalizeOrderSelection(state.orderSelection),
   }

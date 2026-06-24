@@ -51,6 +51,7 @@ export function HomeView({
   const [insight, setInsight] = useState<string | null>(null)
   const [manualOpen, setManualOpen] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [showMessage, setShowMessage] = useState(false)
 
   const orderItems = useMemo(
     () => buildOrderItems(profiles, guests, selectedMemberIds),
@@ -125,7 +126,7 @@ export function HomeView({
   }
 
   return (
-    <div className="home-view">
+    <div className={`home-view${selectedCount > 0 ? ' home-view--has-dock' : ''}`}>
       <AiShuttlePanel
         onSubmit={handleAiSubmit}
         isThinking={isThinking}
@@ -184,26 +185,38 @@ export function HomeView({
         )}
       </div>
 
-      <div className={`order-dock${selectedCount > 0 ? ' is-visible' : ''}`}>
-        {selectedCount > 0 ? (
-          <>
-            <div className="order-dock__summary">
-              <div className="order-dock__head">
+      {selectedCount > 0 && (
+        <div className="order-dock is-visible">
+          <div className="order-dock__inner">
+            <div className="order-dock__top">
+              <div className="order-dock__meta">
                 <strong>{selectedCount}명 · {total}잔</strong>
-                <button type="button" className="btn btn--ghost btn--sm" onClick={onClearAll}>
-                  초기화
-                </button>
+                {aggregated.length > 0 && (
+                  <p className="order-dock__drinks">
+                    {aggregated
+                      .map(({ drink, count }) =>
+                        count > 1 ? `${drink} ×${count}` : drink,
+                      )
+                      .join(' · ')}
+                  </p>
+                )}
               </div>
-              {aggregated.length > 0 && (
-                <div className="order-dock__drinks">
-                  {aggregated.map(({ drink, count }) => (
-                    <span key={drink} className="dock-chip">
-                      {drink} ×{count}
-                    </span>
-                  ))}
-                </div>
-              )}
+              <button type="button" className="btn btn--ghost btn--sm" onClick={onClearAll}>
+                초기화
+              </button>
             </div>
+
+            <button
+              type="button"
+              className="message-toggle"
+              onClick={() => setShowMessage((v) => !v)}
+            >
+              {showMessage ? '주문 문구 접기' : '주문 문구 미리보기'}
+            </button>
+            {showMessage && (
+              <pre className="order-message order-message--dock">{orderMessage}</pre>
+            )}
+
             <button
               type="button"
               className={`btn btn--cta btn--block${copied ? ' is-success' : ''}`}
@@ -222,11 +235,9 @@ export function HomeView({
                 </>
               )}
             </button>
-          </>
-        ) : (
-          <p className="order-dock__empty">AI에게 말하거나 Favorite에서 불러오세요</p>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

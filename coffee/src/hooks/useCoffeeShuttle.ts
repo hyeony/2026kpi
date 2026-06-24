@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { AppState, Profile, ViewId } from '../types'
+import type { ProfilePreferences } from '../components/PreferencesPanel'
 import { loadState, normalizeState, saveState, todayString } from '../utils/storage'
 
 function uid(): string {
@@ -127,6 +128,8 @@ export function useCoffeeShuttle() {
       name: name.trim(),
       department: department.trim() || 'Development',
       preferredDrinks: drinks.filter(Boolean).slice(0, 2),
+      tasteTags: [],
+      aiNotes: '',
     }
     setState((prev) => ({ ...prev, profiles: [...prev.profiles, profile] }))
   }, [])
@@ -150,6 +153,22 @@ export function useCoffeeShuttle() {
     [],
   )
 
+  const saveProfilePreferences = useCallback((profileId: string, data: ProfilePreferences) => {
+    setState((prev) => ({
+      ...prev,
+      profiles: prev.profiles.map((p) =>
+        p.id === profileId
+          ? {
+              ...p,
+              preferredDrinks: data.preferredDrinks.filter(Boolean).slice(0, 2),
+              tasteTags: data.tasteTags,
+              aiNotes: data.aiNotes.trim(),
+            }
+          : p,
+      ),
+    }))
+  }, [])
+
   const deleteProfile = useCallback((profileId: string) => {
     setState((prev) => {
       const selection = normalizeSelection(prev.orderSelection)
@@ -165,18 +184,6 @@ export function useCoffeeShuttle() {
     })
   }, [])
 
-  const updateMyPreferences = useCallback((drinks: string[]) => {
-    if (!state.meId) return
-    setState((prev) => ({
-      ...prev,
-      profiles: prev.profiles.map((p) =>
-        p.id === prev.meId
-          ? { ...p, preferredDrinks: drinks.filter(Boolean).slice(0, 2) }
-          : p,
-      ),
-    }))
-  }, [state.meId])
-
   return {
     state,
     meProfile,
@@ -191,7 +198,7 @@ export function useCoffeeShuttle() {
     removeGuest,
     addProfile,
     updateProfile,
+    saveProfilePreferences,
     deleteProfile,
-    updateMyPreferences,
   }
 }
