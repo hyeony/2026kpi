@@ -39,13 +39,7 @@ export function createSeedState(): AppState {
     profiles,
     orderSelection: {
       date: today,
-      memberIds: [
-        'profile-jihyun',
-        'profile-minsu',
-        'profile-soyeon',
-        'profile-chaerin-y',
-        'profile-kyungho-m',
-      ],
+      memberIds: [],
       guests: [],
     },
     activeView: 'home',

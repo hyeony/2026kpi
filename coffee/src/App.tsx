@@ -1,6 +1,6 @@
 import { MemberManager } from './components/MemberManager'
+import { HomeView } from './components/HomeView'
 import { MyPage } from './components/MyPage'
-import { OrgOrderBuilder } from './components/OrgOrderBuilder'
 import { SideNav } from './components/SideNav'
 import { Avatar } from './components/Avatar'
 import { CoffeeIcon } from './components/Icons'
@@ -17,6 +17,7 @@ function App() {
     selectDepartment,
     clearDepartment,
     clearOrderSelection,
+    applyOrderSelection,
     addGuest,
     removeGuest,
     addProfile,
@@ -30,7 +31,7 @@ function App() {
       <SideNav active={state.activeView} onChange={setActiveView} />
 
       <div className="app-body">
-        <header className="hero">
+        <header className="hero hero--compact">
           <div className="hero__content">
             <div className="hero__top">
               <div className="hero__brand">
@@ -59,12 +60,13 @@ function App() {
 
         <main className={`main${state.activeView === 'home' ? ' main--home' : ''}`}>
           {state.activeView === 'home' && (
-            <OrgOrderBuilder
+            <HomeView
               companyName={state.companyName}
               profiles={state.profiles}
               meId={state.meId}
               selectedMemberIds={orderSelection.memberIds}
               guests={orderSelection.guests}
+              onApplySelection={applyOrderSelection}
               onToggleMember={toggleOrderMember}
               onSelectDepartment={selectDepartment}
               onClearDepartment={clearDepartment}

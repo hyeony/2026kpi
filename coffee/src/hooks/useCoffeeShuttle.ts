@@ -82,6 +82,17 @@ export function useCoffeeShuttle() {
     setState((prev) => ({ ...prev, orderSelection: freshOrderSelection() }))
   }, [])
 
+  const applyOrderSelection = useCallback((memberIds: string[]) => {
+    setState((prev) => {
+      const selection = normalizeSelection(prev.orderSelection)
+      const valid = memberIds.filter((id) => prev.profiles.some((p) => p.id === id))
+      return {
+        ...prev,
+        orderSelection: { ...selection, memberIds: valid, guests: [] },
+      }
+    })
+  }, [])
+
   const addGuest = useCallback((name: string, drinks: string[]) => {
     const guest = {
       id: uid(),
@@ -175,6 +186,7 @@ export function useCoffeeShuttle() {
     selectDepartment,
     clearDepartment,
     clearOrderSelection,
+    applyOrderSelection,
     addGuest,
     removeGuest,
     addProfile,

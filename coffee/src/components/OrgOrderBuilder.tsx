@@ -1,16 +1,10 @@
 import { useMemo, useState } from 'react'
 import type { OrderGuest, Profile } from '../types'
 import { groupProfilesByDepartment } from '../utils/org'
-import {
-  aggregateDrinks,
-  buildOrderItems,
-  formatOrderMessage,
-} from '../utils/order'
 import { Avatar } from './Avatar'
-import { CheckIcon, ChevronIcon, ClipboardIcon, PlusIcon, TrashIcon } from './Icons'
+import { CheckIcon, ChevronIcon, PlusIcon, TrashIcon } from './Icons'
 
 interface Props {
-  companyName: string
   profiles: Profile[]
   meId: string | null
   selectedMemberIds: string[]
@@ -18,13 +12,12 @@ interface Props {
   onToggleMember: (profileId: string) => void
   onSelectDepartment: (department: string) => void
   onClearDepartment: (department: string) => void
-  onClearAll: () => void
   onAddGuest: (name: string, drinks: string[]) => void
   onRemoveGuest: (guestId: string) => void
+  embedded?: boolean
 }
 
 export function OrgOrderBuilder({
-  companyName,
   profiles,
   meId,
   selectedMemberIds,
@@ -32,30 +25,17 @@ export function OrgOrderBuilder({
   onToggleMember,
   onSelectDepartment,
   onClearDepartment,
-  onClearAll,
   onAddGuest,
   onRemoveGuest,
+  embedded = false,
 }: Props) {
   const [openDepts, setOpenDepts] = useState<Set<string>>(() => new Set(['Development']))
-  const [copied, setCopied] = useState(false)
   const [guestOpen, setGuestOpen] = useState(false)
   const [guestName, setGuestName] = useState('')
   const [guestDrink, setGuestDrink] = useState('')
 
   const departments = useMemo(() => groupProfilesByDepartment(profiles), [profiles])
   const selectedSet = useMemo(() => new Set(selectedMemberIds), [selectedMemberIds])
-
-  const orderItems = useMemo(
-    () => buildOrderItems(profiles, guests, selectedMemberIds),
-    [profiles, guests, selectedMemberIds],
-  )
-  const aggregated = useMemo(() => aggregateDrinks(orderItems), [orderItems])
-  const orderMessage = useMemo(
-    () => formatOrderMessage(companyName, orderItems, aggregated),
-    [companyName, orderItems, aggregated],
-  )
-  const total = aggregated.reduce((sum, d) => sum + d.count, 0)
-  const selectedCount = selectedMemberIds.length + guests.length
 
   const toggleDept = (department: string) => {
     setOpenDepts((prev) => {
@@ -64,23 +44,6 @@ export function OrgOrderBuilder({
       else next.add(department)
       return next
     })
-  }
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(orderMessage)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch {
-      const textarea = document.createElement('textarea')
-      textarea.value = orderMessage
-      document.body.appendChild(textarea)
-      textarea.select()
-      document.execCommand('copy')
-      document.body.removeChild(textarea)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    }
   }
 
   const handleAddGuest = () => {
@@ -92,11 +55,13 @@ export function OrgOrderBuilder({
   }
 
   return (
-    <div className="org-order">
-      <div className="org-order__intro">
-        <h2 className="panel__title">누구랑 시킬까요?</h2>
-        <p className="panel__desc">팀 조직도에서 선택하면 주문 그룹이 만들어져요</p>
-      </div>
+    <div className={`org-order${embedded ? ' org-order--embedded' : ''}`}>
+      {!embedded && (
+        <div className="org-order__intro">
+          <h2 className="panel__title">누구랑 시킬까요?</h2>
+          <p className="panel__desc">팀 조직도에서 선택하면 주문 그룹이 만들어져요</p>
+        </div>
+      )}
 
       <div className="org-tree">
         {departments.map(({ department, members }) => {
@@ -225,50 +190,6 @@ export function OrgOrderBuilder({
           </div>
         </div>
       )}
-
-      <div className={`order-dock${selectedCount > 0 ? ' is-visible' : ''}`}>
-        {selectedCount > 0 ? (
-          <>
-            <div className="order-dock__summary">
-              <div className="order-dock__head">
-                <strong>{selectedCount}명 · {total}잔</strong>
-                <button type="button" className="btn btn--ghost btn--sm" onClick={onClearAll}>
-                  초기화
-                </button>
-              </div>
-              {aggregated.length > 0 && (
-                <div className="order-dock__drinks">
-                  {aggregated.map(({ drink, count }) => (
-                    <span key={drink} className="dock-chip">
-                      {drink} ×{count}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-            <button
-              type="button"
-              className={`btn btn--cta btn--block${copied ? ' is-success' : ''}`}
-              onClick={handleCopy}
-              disabled={orderItems.length === 0}
-            >
-              {copied ? (
-                <>
-                  <CheckIcon size={18} />
-                  복사 완료!
-                </>
-              ) : (
-                <>
-                  <ClipboardIcon size={18} />
-                  주문 문구 복사
-                </>
-              )}
-            </button>
-          </>
-        ) : (
-          <p className="order-dock__empty">팀에서 사람을 선택해 주세요</p>
-        )}
-      </div>
     </div>
   )
 }
