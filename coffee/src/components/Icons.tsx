@@ -84,3 +84,16 @@ export function FolderIcon({ size = 20, className }: IconProps) {
     </svg>
   )
 }
+
+export function HeartIcon({ size = 20, className }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+      <path
+        d="M12 20.5s-6.5-4.2-8.5-8.2C1.8 8.8 3.6 5.5 6.8 5.5c1.7 0 3.1.9 4 2.3.9-1.4 2.3-2.3 4-2.3 3.2 0 5 3.3 3.3 6.8-2 4-8.5 8.2-8.5 8.2Z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}

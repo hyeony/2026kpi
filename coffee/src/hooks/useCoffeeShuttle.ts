@@ -1,146 +1,207 @@
-import { useCallback, useEffect, useState } from 'react'
-import type { AppState, Member, Project } from '../types'
-import { loadState, saveState, todayString } from '../utils/storage'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import type { AppState, Guest, Meeting, Profile, ResolvedParticipant, ViewId } from '../types'
+import { resolveMeetingParticipants } from '../utils/meeting'
+import { loadState, normalizeState, saveState, todayString } from '../utils/storage'
 
 function uid(): string {
   return crypto.randomUUID()
 }
 
 function freshParticipation() {
-  return { date: todayString(), memberIds: [] as string[] }
+  return { date: todayString(), memberIds: [] as string[], guestIds: [] as string[] }
 }
 
-function normalizeParticipation(p: Project['participation']) {
+function normalizeParticipation(p: Meeting['participation']) {
   if (p.date !== todayString()) return freshParticipation()
   return p
 }
 
-function normalizeProject(project: Project): Project {
-  return {
-    ...project,
-    participation: normalizeParticipation(project.participation),
-    members: project.members.map((m) => ({
-      ...m,
-      preferredDrinks: m.preferredDrinks.slice(0, 2),
-    })),
-  }
-}
-
 export function useCoffeeShuttle() {
-  const [state, setState] = useState<AppState>(() => {
-    const loaded = loadState()
-    return {
-      ...loaded,
-      projects: loaded.projects.map(normalizeProject),
-    }
-  })
+  const [state, setState] = useState<AppState>(() => normalizeState(loadState()))
 
   useEffect(() => {
     saveState(state)
   }, [state])
 
-  const activeProject = state.projects.find((p) => p.id === state.activeProjectId) ?? null
+  const activeMeeting = state.meetings.find((m) => m.id === state.activeMeetingId) ?? null
+  const meProfile = state.profiles.find((p) => p.id === state.meId) ?? null
 
-  const updateProjects = useCallback((updater: (projects: Project[]) => Project[]) => {
-    setState((prev) => ({ ...prev, projects: updater(prev.projects) }))
+  const activeParticipants = useMemo((): ResolvedParticipant[] => {
+    if (!activeMeeting) return []
+    return resolveMeetingParticipants(activeMeeting, state.profiles)
+  }, [activeMeeting, state.profiles])
+
+  const updateMeetings = useCallback((updater: (meetings: Meeting[]) => Meeting[]) => {
+    setState((prev) => ({ ...prev, meetings: updater(prev.meetings) }))
   }, [])
 
-  const createProject = useCallback((name: string) => {
-    const project: Project = {
+  const setActiveView = useCallback((view: ViewId) => {
+    setState((prev) => ({ ...prev, activeView: view }))
+  }, [])
+
+  const createMeeting = useCallback((name: string) => {
+    const meeting: Meeting = {
       id: uid(),
       name: name.trim(),
-      members: [],
+      memberIds: state.meId ? [state.meId] : [],
+      guests: [],
       participation: freshParticipation(),
     }
     setState((prev) => ({
-      projects: [...prev.projects, project],
-      activeProjectId: project.id,
+      ...prev,
+      meetings: [...prev.meetings, meeting],
+      activeMeetingId: meeting.id,
+      activeView: 'order',
     }))
+  }, [state.meId])
+
+  const selectMeeting = useCallback((id: string) => {
+    setState((prev) => ({ ...prev, activeMeetingId: id, activeView: 'order' }))
   }, [])
 
-  const selectProject = useCallback((id: string) => {
-    setState((prev) => ({ ...prev, activeProjectId: id }))
-  }, [])
-
-  const deleteProject = useCallback((id: string) => {
+  const deleteMeeting = useCallback((id: string) => {
     setState((prev) => {
-      const projects = prev.projects.filter((p) => p.id !== id)
-      const activeProjectId =
-        prev.activeProjectId === id ? (projects[0]?.id ?? null) : prev.activeProjectId
-      return { projects, activeProjectId }
+      const meetings = prev.meetings.filter((m) => m.id !== id)
+      const activeMeetingId =
+        prev.activeMeetingId === id ? (meetings[0]?.id ?? null) : prev.activeMeetingId
+      return { ...prev, meetings, activeMeetingId }
     })
   }, [])
 
-  const renameProject = useCallback((id: string, name: string) => {
-    updateProjects((projects) =>
-      projects.map((p) => (p.id === id ? { ...p, name: name.trim() } : p)),
-    )
-  }, [updateProjects])
+  const renameMeeting = useCallback(
+    (id: string, name: string) => {
+      updateMeetings((meetings) =>
+        meetings.map((m) => (m.id === id ? { ...m, name: name.trim() } : m)),
+      )
+    },
+    [updateMeetings],
+  )
 
-  const addMember = useCallback(
-    (projectId: string, name: string, drinks: string[]) => {
-      const member: Member = {
+  const addProfile = useCallback((name: string, drinks: string[]) => {
+    const profile: Profile = {
+      id: uid(),
+      name: name.trim(),
+      preferredDrinks: drinks.filter(Boolean).slice(0, 2),
+    }
+    setState((prev) => ({ ...prev, profiles: [...prev.profiles, profile] }))
+  }, [])
+
+  const updateProfile = useCallback((profileId: string, name: string, drinks: string[]) => {
+    setState((prev) => ({
+      ...prev,
+      profiles: prev.profiles.map((p) =>
+        p.id === profileId
+          ? { ...p, name: name.trim(), preferredDrinks: drinks.filter(Boolean).slice(0, 2) }
+          : p,
+      ),
+    }))
+  }, [])
+
+  const deleteProfile = useCallback((profileId: string) => {
+    setState((prev) => ({
+      ...prev,
+      profiles: prev.profiles.filter((p) => p.id !== profileId),
+      meId: prev.meId === profileId ? null : prev.meId,
+      meetings: prev.meetings.map((m) => ({
+        ...m,
+        memberIds: m.memberIds.filter((id) => id !== profileId),
+        participation: {
+          ...normalizeParticipation(m.participation),
+          memberIds: m.participation.memberIds.filter((id) => id !== profileId),
+        },
+      })),
+    }))
+  }, [])
+
+  const updateMyPreferences = useCallback((drinks: string[]) => {
+    if (!state.meId) return
+    setState((prev) => ({
+      ...prev,
+      profiles: prev.profiles.map((p) =>
+        p.id === prev.meId
+          ? { ...p, preferredDrinks: drinks.filter(Boolean).slice(0, 2) }
+          : p,
+      ),
+    }))
+  }, [state.meId])
+
+  const addMemberToMeeting = useCallback(
+    (meetingId: string, profileId: string) => {
+      updateMeetings((meetings) =>
+        meetings.map((m) =>
+          m.id === meetingId && !m.memberIds.includes(profileId)
+            ? { ...m, memberIds: [...m.memberIds, profileId] }
+            : m,
+        ),
+      )
+    },
+    [updateMeetings],
+  )
+
+  const removeMemberFromMeeting = useCallback(
+    (meetingId: string, profileId: string) => {
+      updateMeetings((meetings) =>
+        meetings.map((m) => {
+          if (m.id !== meetingId) return m
+          const participation = normalizeParticipation(m.participation)
+          return {
+            ...m,
+            memberIds: m.memberIds.filter((id) => id !== profileId),
+            participation: {
+              ...participation,
+              memberIds: participation.memberIds.filter((id) => id !== profileId),
+            },
+          }
+        }),
+      )
+    },
+    [updateMeetings],
+  )
+
+  const addGuestToMeeting = useCallback(
+    (meetingId: string, name: string, drinks: string[]) => {
+      const guest: Guest = {
         id: uid(),
         name: name.trim(),
-        preferredDrinks: drinks.filter(Boolean).slice(0, 2),
+        drinks: drinks.filter(Boolean).slice(0, 2),
       }
-      updateProjects((projects) =>
-        projects.map((p) =>
-          p.id === projectId ? { ...p, members: [...p.members, member] } : p,
+      updateMeetings((meetings) =>
+        meetings.map((m) =>
+          m.id === meetingId ? { ...m, guests: [...m.guests, guest] } : m,
         ),
       )
     },
-    [updateProjects],
+    [updateMeetings],
   )
 
-  const updateMember = useCallback(
-    (projectId: string, memberId: string, name: string, drinks: string[]) => {
-      updateProjects((projects) =>
-        projects.map((p) =>
-          p.id === projectId
-            ? {
-                ...p,
-                members: p.members.map((m) =>
-                  m.id === memberId
-                    ? { ...m, name: name.trim(), preferredDrinks: drinks.filter(Boolean).slice(0, 2) }
-                    : m,
-                ),
-              }
-            : p,
-        ),
+  const removeGuestFromMeeting = useCallback(
+    (meetingId: string, guestId: string) => {
+      updateMeetings((meetings) =>
+        meetings.map((m) => {
+          if (m.id !== meetingId) return m
+          const participation = normalizeParticipation(m.participation)
+          return {
+            ...m,
+            guests: m.guests.filter((g) => g.id !== guestId),
+            participation: {
+              ...participation,
+              guestIds: participation.guestIds.filter((id) => id !== guestId),
+            },
+          }
+        }),
       )
     },
-    [updateProjects],
+    [updateMeetings],
   )
 
-  const deleteMember = useCallback(
-    (projectId: string, memberId: string) => {
-      updateProjects((projects) =>
-        projects.map((p) =>
-          p.id === projectId
-            ? {
-                ...p,
-                members: p.members.filter((m) => m.id !== memberId),
-                participation: {
-                  ...p.participation,
-                  memberIds: p.participation.memberIds.filter((id) => id !== memberId),
-                },
-              }
-            : p,
-        ),
-      )
-    },
-    [updateProjects],
-  )
-
-  const toggleParticipation = useCallback((projectId: string, memberId: string) => {
-    updateProjects((projects) =>
-      projects.map((p) => {
-        if (p.id !== projectId) return p
-        const participation = normalizeParticipation(p.participation)
+  const toggleMemberParticipation = useCallback((meetingId: string, memberId: string) => {
+    updateMeetings((meetings) =>
+      meetings.map((m) => {
+        if (m.id !== meetingId) return m
+        const participation = normalizeParticipation(m.participation)
         const isJoined = participation.memberIds.includes(memberId)
         return {
-          ...p,
+          ...m,
           participation: {
             ...participation,
             memberIds: isJoined
@@ -150,43 +211,77 @@ export function useCoffeeShuttle() {
         }
       }),
     )
-  }, [updateProjects])
+  }, [updateMeetings])
 
-  const selectAllParticipation = useCallback((projectId: string) => {
-    updateProjects((projects) =>
-      projects.map((p) =>
-        p.id === projectId
-          ? {
-              ...p,
-              participation: {
-                date: todayString(),
-                memberIds: p.members.map((m) => m.id),
-              },
-            }
-          : p,
-      ),
+  const toggleGuestParticipation = useCallback((meetingId: string, guestId: string) => {
+    updateMeetings((meetings) =>
+      meetings.map((m) => {
+        if (m.id !== meetingId) return m
+        const participation = normalizeParticipation(m.participation)
+        const isJoined = participation.guestIds.includes(guestId)
+        return {
+          ...m,
+          participation: {
+            ...participation,
+            guestIds: isJoined
+              ? participation.guestIds.filter((id) => id !== guestId)
+              : [...participation.guestIds, guestId],
+          },
+        }
+      }),
     )
-  }, [updateProjects])
+  }, [updateMeetings])
 
-  const clearParticipation = useCallback((projectId: string) => {
-    updateProjects((projects) =>
-      projects.map((p) =>
-        p.id === projectId ? { ...p, participation: freshParticipation() } : p,
-      ),
+  const selectAllParticipation = useCallback((meetingId: string) => {
+    updateMeetings((meetings) =>
+      meetings.map((m) => {
+        if (m.id !== meetingId) return m
+        const participants = resolveMeetingParticipants(m, state.profiles)
+        return {
+          ...m,
+          participation: {
+            date: todayString(),
+            memberIds: participants
+              .filter((p) => p.kind === 'member' && p.preferredDrinks.length > 0)
+              .map((p) => p.id),
+            guestIds: participants
+              .filter((p) => p.kind === 'guest' && p.preferredDrinks.length > 0)
+              .map((p) => p.id),
+          },
+        }
+      }),
     )
-  }, [updateProjects])
+  }, [updateMeetings, state.profiles])
+
+  const clearParticipation = useCallback(
+    (meetingId: string) => {
+      updateMeetings((meetings) =>
+        meetings.map((m) => (m.id === meetingId ? { ...m, participation: freshParticipation() } : m)),
+      )
+    },
+    [updateMeetings],
+  )
 
   return {
     state,
-    activeProject,
-    createProject,
-    selectProject,
-    deleteProject,
-    renameProject,
-    addMember,
-    updateMember,
-    deleteMember,
-    toggleParticipation,
+    activeMeeting,
+    meProfile,
+    activeParticipants,
+    setActiveView,
+    createMeeting,
+    selectMeeting,
+    deleteMeeting,
+    renameMeeting,
+    addProfile,
+    updateProfile,
+    deleteProfile,
+    updateMyPreferences,
+    addMemberToMeeting,
+    removeMemberFromMeeting,
+    addGuestToMeeting,
+    removeGuestFromMeeting,
+    toggleMemberParticipation,
+    toggleGuestParticipation,
     selectAllParticipation,
     clearParticipation,
   }

@@ -1,12 +1,12 @@
 const PALETTE = [
-  '#6F4E37',
-  '#8B5E3C',
-  '#A0714F',
-  '#C8956C',
-  '#5C7A6B',
-  '#7A6B8A',
-  '#8A6B5C',
-  '#6B7A8A',
+  '#6366F1',
+  '#8B5CF6',
+  '#0EA5E9',
+  '#14B8A6',
+  '#64748B',
+  '#EC4899',
+  '#F59E0B',
+  '#10B981',
 ]
 
 export function memberInitial(name: string): string {

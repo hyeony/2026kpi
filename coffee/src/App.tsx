@@ -1,130 +1,130 @@
-import { useMemo, useState } from 'react'
 import { MemberManager } from './components/MemberManager'
+import { MeetingSelector } from './components/MeetingSelector'
+import { MeetingsPanel } from './components/MeetingsPanel'
 import { OrderPanel } from './components/OrderPanel'
-import { ProjectSelector } from './components/ProjectSelector'
-import { TabBar } from './components/TabBar'
+import { PreferencesPanel } from './components/PreferencesPanel'
+import { SideNav } from './components/SideNav'
 import { CoffeeIcon } from './components/Icons'
 import { useCoffeeShuttle } from './hooks/useCoffeeShuttle'
-import { aggregateDrinks, buildOrderItems } from './utils/order'
-import type { TabId } from './types'
 import './App.css'
 
 function App() {
-  const [tab, setTab] = useState<TabId>('members')
   const {
     state,
-    activeProject,
-    createProject,
-    selectProject,
-    deleteProject,
-    renameProject,
-    addMember,
-    updateMember,
-    deleteMember,
-    toggleParticipation,
+    activeMeeting,
+    meProfile,
+    activeParticipants,
+    setActiveView,
+    createMeeting,
+    selectMeeting,
+    deleteMeeting,
+    renameMeeting,
+    addProfile,
+    updateProfile,
+    deleteProfile,
+    updateMyPreferences,
+    addMemberToMeeting,
+    removeMemberFromMeeting,
+    addGuestToMeeting,
+    removeGuestFromMeeting,
+    toggleMemberParticipation,
+    toggleGuestParticipation,
     selectAllParticipation,
     clearParticipation,
   } = useCoffeeShuttle()
 
-  const participantCount = activeProject?.participation.memberIds.length ?? 0
-  const memberCount = activeProject?.members.length ?? 0
-
-  const totalDrinks = useMemo(() => {
-    if (!activeProject) return 0
-    const items = buildOrderItems(
-      activeProject.members,
-      activeProject.participation.memberIds,
-    )
-    return aggregateDrinks(items).reduce((s, d) => s + d.count, 0)
-  }, [activeProject])
-
   return (
-    <div className="app">
-      <header className="hero">
-        <div className="hero__glow" aria-hidden />
-        <div className="hero__content">
-          <div className="hero__top">
-            <div className="hero__brand">
-              <span className="hero__logo">
-                <CoffeeIcon size={22} />
-              </span>
-              <div>
-                <h1>Coffee Shuttle</h1>
-                <p>팀 커피 주문, 30초면 끝</p>
+    <div className="app-shell">
+      <SideNav active={state.activeView} onChange={setActiveView} />
+
+      <div className="app-body">
+        <header className="hero">
+          <div className="hero__glow" aria-hidden />
+          <div className="hero__content">
+            <div className="hero__top">
+              <div className="hero__brand">
+                <span className="hero__logo">
+                  <CoffeeIcon size={22} />
+                </span>
+                <div>
+                  <h1>Coffee Runner</h1>
+                  <p>{state.companyName} · 팀 커피 주문, 30초면 끝</p>
+                </div>
               </div>
             </div>
+
+            {state.activeView === 'order' && (
+              <MeetingSelector
+                meetings={state.meetings}
+                activeMeetingId={state.activeMeetingId}
+                onSelect={selectMeeting}
+                onCreate={createMeeting}
+                onDelete={deleteMeeting}
+                onRename={renameMeeting}
+              />
+            )}
           </div>
+        </header>
 
-          <ProjectSelector
-            projects={state.projects}
-            activeProjectId={state.activeProjectId}
-            onSelect={selectProject}
-            onCreate={createProject}
-            onDelete={deleteProject}
-            onRename={renameProject}
-          />
-
-          {activeProject && (
-            <div className="hero__stats">
-              <div className="stat-pill">
-                <span className="stat-pill__value">{memberCount}</span>
-                <span className="stat-pill__label">멤버</span>
+        <main className="main">
+          {state.activeView === 'order' && (
+            activeMeeting ? (
+              <OrderPanel
+                meetingName={activeMeeting.name}
+                companyName={state.companyName}
+                participants={activeParticipants}
+                participantMemberIds={activeMeeting.participation.memberIds}
+                participantGuestIds={activeMeeting.participation.guestIds}
+                onToggleMember={(id) => toggleMemberParticipation(activeMeeting.id, id)}
+                onToggleGuest={(id) => toggleGuestParticipation(activeMeeting.id, id)}
+                onSelectAll={() => selectAllParticipation(activeMeeting.id)}
+                onClearAll={() => clearParticipation(activeMeeting.id)}
+              />
+            ) : (
+              <div className="welcome">
+                <div className="welcome__visual" aria-hidden>
+                  <span className="welcome__cup">☕</span>
+                  <span className="welcome__steam">~</span>
+                </div>
+                <h2>모임을 선택해 주세요</h2>
+                <p>프로젝트 팀이든 웰컴티든,<br />같이 시키는 그룹을 모임으로 만들어요.</p>
               </div>
-              <div className="stat-pill">
-                <span className="stat-pill__value">{participantCount}</span>
-                <span className="stat-pill__label">참여</span>
-              </div>
-              <div className="stat-pill stat-pill--accent">
-                <span className="stat-pill__value">{totalDrinks}</span>
-                <span className="stat-pill__label">잔</span>
-              </div>
-            </div>
+            )
           )}
-        </div>
-      </header>
 
-      <main className="main">
-        {!activeProject ? (
-          <div className="welcome">
-            <div className="welcome__visual" aria-hidden>
-              <span className="welcome__cup">☕</span>
-              <span className="welcome__steam">~</span>
-            </div>
-            <h2>커피 셔틀을 시작해요</h2>
-            <p>프로젝트를 만들고 팀원의 선호 음료를 등록하면<br />매일 주문 문구를 자동으로 만들어 드려요.</p>
-            <ul className="welcome__steps">
-              <li><span>1</span> 프로젝트 생성</li>
-              <li><span>2</span> 멤버 &amp; 음료 등록</li>
-              <li><span>3</span> 참여 체크 후 복사</li>
-            </ul>
-          </div>
-        ) : tab === 'members' ? (
-          <MemberManager
-            members={activeProject.members}
-            onAdd={(name, drinks) => addMember(activeProject.id, name, drinks)}
-            onUpdate={(id, name, drinks) => updateMember(activeProject.id, id, name, drinks)}
-            onDelete={(id) => deleteMember(activeProject.id, id)}
-          />
-        ) : (
-          <OrderPanel
-            projectName={activeProject.name}
-            members={activeProject.members}
-            participantIds={activeProject.participation.memberIds}
-            onToggle={(id) => toggleParticipation(activeProject.id, id)}
-            onSelectAll={() => selectAllParticipation(activeProject.id)}
-            onClearAll={() => clearParticipation(activeProject.id)}
-          />
-        )}
-      </main>
+          {state.activeView === 'meetings' && (
+            <MeetingsPanel
+              companyName={state.companyName}
+              meetings={state.meetings}
+              profiles={state.profiles}
+              activeMeetingId={state.activeMeetingId}
+              onSelect={selectMeeting}
+              onCreate={createMeeting}
+              onDelete={deleteMeeting}
+              onRename={renameMeeting}
+              onAddMember={addMemberToMeeting}
+              onRemoveMember={removeMemberFromMeeting}
+              onAddGuest={addGuestToMeeting}
+              onRemoveGuest={removeGuestFromMeeting}
+            />
+          )}
 
-      {activeProject && (
-        <TabBar
-          active={tab}
-          onChange={setTab}
-          memberCount={memberCount}
-          participantCount={participantCount}
-        />
-      )}
+          {state.activeView === 'members' && (
+            <MemberManager
+              companyName={state.companyName}
+              profiles={state.profiles}
+              meId={state.meId}
+              onAdd={addProfile}
+              onUpdate={updateProfile}
+              onDelete={deleteProfile}
+            />
+          )}
+
+          {state.activeView === 'preferences' && meProfile && (
+            <PreferencesPanel profile={meProfile} onSave={updateMyPreferences} />
+          )}
+        </main>
+      </div>
     </div>
   )
 }

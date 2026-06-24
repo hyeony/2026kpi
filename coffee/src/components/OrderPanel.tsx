@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import type { Member } from '../types'
+import type { ResolvedParticipant } from '../types'
 import {
   aggregateDrinks,
   buildOrderItems,
@@ -9,19 +9,25 @@ import { Avatar } from './Avatar'
 import { CheckIcon, ClipboardIcon } from './Icons'
 
 interface Props {
-  projectName: string
-  members: Member[]
-  participantIds: string[]
-  onToggle: (memberId: string) => void
+  meetingName: string
+  companyName: string
+  participants: ResolvedParticipant[]
+  participantMemberIds: string[]
+  participantGuestIds: string[]
+  onToggleMember: (memberId: string) => void
+  onToggleGuest: (guestId: string) => void
   onSelectAll: () => void
   onClearAll: () => void
 }
 
 export function OrderPanel({
-  projectName,
-  members,
-  participantIds,
-  onToggle,
+  meetingName,
+  companyName,
+  participants,
+  participantMemberIds,
+  participantGuestIds,
+  onToggleMember,
+  onToggleGuest,
   onSelectAll,
   onClearAll,
 }: Props) {
@@ -29,16 +35,16 @@ export function OrderPanel({
   const [showMessage, setShowMessage] = useState(false)
 
   const orderItems = useMemo(
-    () => buildOrderItems(members, participantIds),
-    [members, participantIds],
+    () => buildOrderItems(participants, participantMemberIds, participantGuestIds),
+    [participants, participantMemberIds, participantGuestIds],
   )
   const aggregated = useMemo(() => aggregateDrinks(orderItems), [orderItems])
   const orderMessage = useMemo(
-    () => formatOrderMessage(projectName, orderItems, aggregated),
-    [projectName, orderItems, aggregated],
+    () => formatOrderMessage(meetingName, companyName, orderItems, aggregated),
+    [meetingName, companyName, orderItems, aggregated],
   )
   const total = aggregated.reduce((sum, d) => sum + d.count, 0)
-  const progress = members.length > 0 ? (participantIds.length / members.length) * 100 : 0
+  const joinedCount = participantMemberIds.length + participantGuestIds.length
 
   const handleCopy = async () => {
     try {
@@ -65,26 +71,21 @@ export function OrderPanel({
 
   return (
     <section className="panel">
-      <div className="section-head">
+      <div className="section-head section-head--compact">
         <div>
           <h2 className="panel__title">오늘 주문</h2>
           <p className="panel__desc">{todayLabel}</p>
         </div>
-        <div className="order-badge">
-          <span className="order-badge__num">{total}</span>
-          <span className="order-badge__label">잔</span>
-        </div>
       </div>
 
-      <div className="card card--accent">
-        <div className="participation-header">
-          <div>
-            <span className="card-label">참여 현황</span>
-            <p className="participation-count">
-              <strong>{participantIds.length}</strong>
-              <span> / {members.length}명</span>
-            </p>
-          </div>
+      <div className="card">
+        <div className="participation-toolbar">
+          <span className="participation-toolbar__label">
+            참여자 선택
+            {joinedCount > 0 && (
+              <span className="participation-toolbar__count">{joinedCount}명</span>
+            )}
+          </span>
           <div className="btn-row">
             <button type="button" className="btn btn--ghost btn--sm" onClick={onSelectAll}>
               전체
@@ -95,34 +96,44 @@ export function OrderPanel({
           </div>
         </div>
 
-        <div className="progress-bar" aria-hidden>
-          <div className="progress-bar__fill" style={{ width: `${progress}%` }} />
-        </div>
-
-        {members.length === 0 ? (
+        {participants.length === 0 ? (
           <div className="empty-state">
             <span className="empty-state__icon">👥</span>
-            <p>멤버를 먼저 등록해 주세요.</p>
+            <p>모임에 구성원을 추가해 주세요.</p>
+            <p className="empty-state__sub">모임 탭에서 구성원·게스트를 관리할 수 있어요.</p>
           </div>
         ) : (
           <ul className="participation-list">
-            {members.map((member) => {
-              const joined = participantIds.includes(member.id)
-              const hasDrinks = member.preferredDrinks.length > 0
+            {participants.map((participant) => {
+              const joined =
+                participant.kind === 'member'
+                  ? participantMemberIds.includes(participant.id)
+                  : participantGuestIds.includes(participant.id)
+              const hasDrinks = participant.preferredDrinks.length > 0
+
               return (
-                <li key={member.id}>
+                <li key={participant.id}>
                   <button
                     type="button"
                     className={`participation-item${joined ? ' is-joined' : ''}${!hasDrinks ? ' is-disabled' : ''}`}
-                    onClick={() => hasDrinks && onToggle(member.id)}
+                    onClick={() => {
+                      if (!hasDrinks) return
+                      if (participant.kind === 'member') onToggleMember(participant.id)
+                      else onToggleGuest(participant.id)
+                    }}
                     disabled={!hasDrinks}
                   >
-                    <Avatar name={member.name} size="sm" />
+                    <Avatar name={participant.name} size="sm" />
                     <div className="participation-item__body">
-                      <span className="participation-item__name">{member.name}</span>
+                      <span className="participation-item__name">
+                        {participant.name}
+                        {participant.kind === 'guest' && (
+                          <span className="guest-badge">게스트</span>
+                        )}
+                      </span>
                       {hasDrinks ? (
                         <span className="participation-item__drinks">
-                          {member.preferredDrinks.join(' · ')}
+                          {participant.preferredDrinks.join(' · ')}
                         </span>
                       ) : (
                         <span className="participation-item__warn">선호 음료 미등록</span>
@@ -141,16 +152,16 @@ export function OrderPanel({
 
       <div className="card order-preview">
         <div className="order-preview__header">
-          <span className="card-label">주문 리스트</span>
+          <span className="card-label">주문 요약</span>
           {orderItems.length > 0 && (
-            <span className="order-total-pill">{aggregated.length}종 · {total}잔</span>
+            <span className="order-total-pill">{total}잔</span>
           )}
         </div>
 
         {orderItems.length === 0 ? (
           <div className="empty-state empty-state--compact">
             <span className="empty-state__icon">☕</span>
-            <p>참여 멤버를 선택하면<br />리스트가 자동 생성됩니다.</p>
+            <p>참여자를 선택하면<br />리스트가 자동 생성됩니다.</p>
           </div>
         ) : (
           <>
@@ -159,7 +170,10 @@ export function OrderPanel({
                 <li key={item.memberName} className="order-row">
                   <Avatar name={item.memberName} size="sm" />
                   <div>
-                    <strong>{item.memberName}</strong>
+                    <strong>
+                      {item.memberName}
+                      {item.isGuest && <span className="guest-badge">게스트</span>}
+                    </strong>
                     <span>{item.drinks.join(', ')}</span>
                   </div>
                 </li>
@@ -167,10 +181,11 @@ export function OrderPanel({
             </ul>
 
             <div className="aggregate-grid">
-              {aggregated.map(({ drink, count }) => (
+              {aggregated.map(({ drink, count, names }) => (
                 <div key={drink} className="aggregate-chip">
                   <span className="aggregate-chip__name">{drink}</span>
                   <span className="aggregate-chip__count">×{count}</span>
+                  <span className="aggregate-chip__names">{names.join(', ')}</span>
                 </div>
               ))}
             </div>
@@ -184,7 +199,7 @@ export function OrderPanel({
               className="message-toggle"
               onClick={() => setShowMessage((v) => !v)}
             >
-              {showMessage ? '문구 숨기기' : '복사용 문구 보기'}
+              {showMessage ? '문구 숨기기' : '매장용 문구 보기'}
             </button>
             {showMessage && <pre className="order-message">{orderMessage}</pre>}
           </>

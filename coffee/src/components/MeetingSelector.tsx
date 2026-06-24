@@ -1,19 +1,20 @@
 import { useState } from 'react'
-import type { Project } from '../types'
+import type { Meeting } from '../types'
+import { countMeetingRoster } from '../utils/meeting'
 import { ChevronIcon, EditIcon, FolderIcon, PlusIcon, TrashIcon } from './Icons'
 
 interface Props {
-  projects: Project[]
-  activeProjectId: string | null
+  meetings: Meeting[]
+  activeMeetingId: string | null
   onSelect: (id: string) => void
   onCreate: (name: string) => void
   onDelete: (id: string) => void
   onRename: (id: string, name: string) => void
 }
 
-export function ProjectSelector({
-  projects,
-  activeProjectId,
+export function MeetingSelector({
+  meetings,
+  activeMeetingId,
   onSelect,
   onCreate,
   onDelete,
@@ -24,7 +25,7 @@ export function ProjectSelector({
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editName, setEditName] = useState('')
 
-  const active = projects.find((p) => p.id === activeProjectId)
+  const active = meetings.find((m) => m.id === activeMeetingId)
 
   const handleCreate = () => {
     if (!newName.trim()) return
@@ -33,9 +34,9 @@ export function ProjectSelector({
     setOpen(false)
   }
 
-  const startEdit = (project: Project) => {
-    setEditingId(project.id)
-    setEditName(project.name)
+  const startEdit = (meeting: Meeting) => {
+    setEditingId(meeting.id)
+    setEditName(meeting.name)
   }
 
   const commitEdit = () => {
@@ -47,34 +48,34 @@ export function ProjectSelector({
   }
 
   return (
-    <div className="project-selector">
+    <div className="meeting-selector">
       <button
         type="button"
-        className={`project-trigger${open ? ' is-open' : ''}`}
+        className={`meeting-trigger${open ? ' is-open' : ''}`}
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
       >
-        <span className="project-trigger__icon">
+        <span className="meeting-trigger__icon">
           <FolderIcon size={18} />
         </span>
-        <span className="project-trigger__text">
-          <span className="project-trigger__label">프로젝트</span>
-          <span className="project-trigger__name">{active?.name ?? '프로젝트를 선택하세요'}</span>
+        <span className="meeting-trigger__text">
+          <span className="meeting-trigger__label">모임</span>
+          <span className="meeting-trigger__name">{active?.name ?? '모임을 선택하세요'}</span>
         </span>
-        <ChevronIcon className={`project-trigger__chevron${open ? ' is-flipped' : ''}`} />
+        <ChevronIcon className={`meeting-trigger__chevron${open ? ' is-flipped' : ''}`} />
       </button>
 
       {open && (
         <>
-          <div className="project-backdrop" onClick={() => setOpen(false)} />
-          <div className="project-panel">
-            {projects.length === 0 ? (
-              <p className="project-empty">아직 프로젝트가 없어요</p>
+          <div className="meeting-backdrop" onClick={() => setOpen(false)} />
+          <div className="meeting-panel">
+            {meetings.length === 0 ? (
+              <p className="meeting-empty">아직 모임이 없어요</p>
             ) : (
-              <ul className="project-list">
-                {projects.map((project) => (
-                  <li key={project.id} className="project-item">
-                    {editingId === project.id ? (
+              <ul className="meeting-list">
+                {meetings.map((meeting) => (
+                  <li key={meeting.id} className="meeting-item">
+                    {editingId === meeting.id ? (
                       <div className="inline-edit">
                         <input
                           value={editName}
@@ -90,25 +91,25 @@ export function ProjectSelector({
                       <>
                         <button
                           type="button"
-                          className={`project-item__select${project.id === activeProjectId ? ' is-active' : ''}`}
+                          className={`meeting-item__select${meeting.id === activeMeetingId ? ' is-active' : ''}`}
                           onClick={() => {
-                            onSelect(project.id)
+                            onSelect(meeting.id)
                             setOpen(false)
                           }}
                         >
-                          <span className="project-item__name">{project.name}</span>
-                          <span className="project-item__count">{project.members.length}명</span>
+                          <span className="meeting-item__name">{meeting.name}</span>
+                          <span className="meeting-item__count">{countMeetingRoster(meeting)}명</span>
                         </button>
-                        <div className="project-item__actions">
-                          <button type="button" className="icon-btn" onClick={() => startEdit(project)} title="이름 변경">
+                        <div className="meeting-item__actions">
+                          <button type="button" className="icon-btn" onClick={() => startEdit(meeting)} title="이름 변경">
                             <EditIcon size={15} />
                           </button>
                           <button
                             type="button"
                             className="icon-btn icon-btn--danger"
                             onClick={() => {
-                              if (confirm(`"${project.name}" 프로젝트를 삭제할까요?`)) {
-                                onDelete(project.id)
+                              if (confirm(`"${meeting.name}" 모임을 삭제할까요?`)) {
+                                onDelete(meeting.id)
                               }
                             }}
                             title="삭제"
@@ -123,9 +124,9 @@ export function ProjectSelector({
               </ul>
             )}
 
-            <div className="project-create">
+            <div className="meeting-create">
               <input
-                placeholder="새 프로젝트 이름"
+                placeholder="새 모임 이름"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
