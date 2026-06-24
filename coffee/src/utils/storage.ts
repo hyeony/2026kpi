@@ -1,4 +1,4 @@
-import type { AppState, LegacyAppState, Meeting, Profile } from '../types'
+import type { AppState, LegacyAppState } from '../types'
 import { todayString } from './date'
 import { SEED_VERSION, createSeedState } from './seed'
 
@@ -7,7 +7,7 @@ const LEGACY_KEY = 'coffee-shuttle-state'
 
 export { todayString } from './date'
 
-function isLegacyState(raw: unknown): raw is LegacyAppState {
+function isLegacyV1(raw: unknown): raw is LegacyAppState {
   return (
     typeof raw === 'object' &&
     raw !== null &&
@@ -21,71 +21,20 @@ function isAppState(raw: unknown): raw is AppState {
     typeof raw === 'object' &&
     raw !== null &&
     'profiles' in raw &&
-    'meetings' in raw &&
+    'orderSelection' in raw &&
     Array.isArray((raw as AppState).profiles)
   )
 }
 
-function migrateFromLegacy(old: LegacyAppState): AppState {
-  const profileByName = new Map<string, Profile>()
-  const meetings: Meeting[] = []
-
-  for (const project of old.projects) {
-    const memberIds: string[] = []
-
-    for (const member of project.members) {
-      const key = member.name.trim().toLowerCase()
-      let profile = [...profileByName.values()].find((p) => p.name.toLowerCase() === key)
-
-      if (!profile) {
-        profile = {
-          id: member.id,
-          name: member.name.trim(),
-          preferredDrinks: member.preferredDrinks.filter(Boolean).slice(0, 2),
-        }
-        profileByName.set(key, profile)
-      }
-
-      memberIds.push(profile.id)
-    }
-
-    const idSet = new Set(memberIds)
-    meetings.push({
-      id: project.id,
-      name: project.name,
-      memberIds,
-      guests: [],
-      participation: {
-        date: project.participation.date,
-        memberIds: project.participation.memberIds.filter((id) => idSet.has(id)),
-        guestIds: [],
-      },
-    })
-  }
-
-  const profiles = [...profileByName.values()]
-
-  return {
-    companyName: 'H9',
-    profiles,
-    meId: profiles[0]?.id ?? null,
-    meetings,
-    activeMeetingId: old.activeProjectId,
-    activeView: 'order',
-  }
+function freshOrderSelection() {
+  return { date: todayString(), memberIds: [] as string[], guests: [] as AppState['orderSelection']['guests'] }
 }
 
-function normalizeMeeting(meeting: Meeting): Meeting {
-  const today = todayString()
-  const participation =
-    meeting.participation.date !== today
-      ? { date: today, memberIds: [] as string[], guestIds: [] as string[] }
-      : meeting.participation
-
+function normalizeOrderSelection(selection: AppState['orderSelection']): AppState['orderSelection'] {
+  if (selection.date !== todayString()) return freshOrderSelection()
   return {
-    ...meeting,
-    participation,
-    guests: meeting.guests.map((g) => ({
+    ...selection,
+    guests: selection.guests.map((g) => ({
       ...g,
       drinks: g.drinks.filter(Boolean).slice(0, 2),
     })),
@@ -97,9 +46,10 @@ export function normalizeState(state: AppState): AppState {
     ...state,
     profiles: state.profiles.map((p) => ({
       ...p,
+      department: p.department || 'Development',
       preferredDrinks: p.preferredDrinks.filter(Boolean).slice(0, 2),
     })),
-    meetings: state.meetings.map(normalizeMeeting),
+    orderSelection: normalizeOrderSelection(state.orderSelection),
   }
 }
 
@@ -121,14 +71,14 @@ export function loadState(): AppState {
     const legacyRaw = localStorage.getItem(LEGACY_KEY)
     if (legacyRaw) {
       const parsed = JSON.parse(legacyRaw) as unknown
-      if (isLegacyState(parsed) && parsed.projects.length > 0) {
-        const migrated = normalizeState(migrateFromLegacy(parsed))
-        saveState(migrated)
-        return migrated
+      if (isLegacyV1(parsed) && parsed.projects.length > 0) {
+        const seed = createSeedState()
+        saveState(seed)
+        return seed
       }
     }
   } catch {
-    // fall through to seed
+    // fall through
   }
 
   const seed = createSeedState()

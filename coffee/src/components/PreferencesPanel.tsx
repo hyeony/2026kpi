@@ -16,9 +16,10 @@ const DRINK_PRESETS = [
 interface Props {
   profile: Profile
   onSave: (drinks: string[]) => void
+  compact?: boolean
 }
 
-export function PreferencesPanel({ profile, onSave }: Props) {
+export function PreferencesPanel({ profile, onSave, compact = false }: Props) {
   const [drinks, setDrinks] = useState([
     profile.preferredDrinks[0] ?? '',
     profile.preferredDrinks[1] ?? '',
@@ -48,23 +49,27 @@ export function PreferencesPanel({ profile, onSave }: Props) {
 
   return (
     <section className="panel">
-      <div className="section-head">
-        <div>
-          <h2 className="panel__title">나의 취향</h2>
-          <p className="panel__desc">선호 음료 최대 2개 · 주문 시 자동 반영</p>
-        </div>
-      </div>
-
-      <div className="card preferences-card">
-        <div className="preferences-profile">
-          <Avatar name={profile.name} size="lg" />
+      {!compact && (
+        <div className="section-head">
           <div>
-            <strong>{profile.name}</strong>
-            <p>프로필이 설정된 상태입니다</p>
+            <h2 className="panel__title">나의 취향</h2>
+            <p className="panel__desc">선호 음료 최대 2개 · 주문 시 자동 반영</p>
           </div>
         </div>
+      )}
 
-        <span className="card-label">자주 마시는 음료</span>
+      <div className="card preferences-card">
+        {!compact && (
+          <div className="preferences-profile">
+            <Avatar name={profile.name} size="lg" />
+            <div>
+              <strong>{profile.name}</strong>
+              <p>프로필이 설정된 상태입니다</p>
+            </div>
+          </div>
+        )}
+
+        <span className="card-label">{compact ? '취향 수정' : '자주 마시는 음료'}</span>
         <div className="drink-grid">
           {DRINK_PRESETS.map((drink) => {
             const active = selected.includes(drink)

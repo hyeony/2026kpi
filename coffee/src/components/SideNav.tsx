@@ -1,5 +1,5 @@
 import type { ViewId } from '../types'
-import { CoffeeIcon, FolderIcon, HeartIcon, UsersIcon } from './Icons'
+import { CoffeeIcon, HeartIcon, UsersIcon } from './Icons'
 
 interface Props {
   active: ViewId
@@ -7,10 +7,9 @@ interface Props {
 }
 
 const NAV: { id: ViewId; label: string; Icon: typeof CoffeeIcon }[] = [
-  { id: 'order', label: '오늘 주문', Icon: CoffeeIcon },
-  { id: 'meetings', label: '모임', Icon: FolderIcon },
-  { id: 'members', label: '멤버', Icon: UsersIcon },
-  { id: 'preferences', label: '취향', Icon: HeartIcon },
+  { id: 'home', label: '홈', Icon: CoffeeIcon },
+  { id: 'members', label: '구성원', Icon: UsersIcon },
+  { id: 'mypage', label: '마이', Icon: HeartIcon },
 ]
 
 export function SideNav({ active, onChange }: Props) {

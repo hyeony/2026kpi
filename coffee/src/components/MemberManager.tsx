@@ -3,15 +3,45 @@ import type { Profile } from '../types'
 import { Avatar } from './Avatar'
 import { EditIcon, PlusIcon, TrashIcon } from './Icons'
 
+const DEPT_OPTIONS = [
+  'Strategy',
+  'Development',
+  'Interaction',
+  'UX',
+  'Visual',
+  'PMO Group',
+  'C level',
+]
+
 interface Props {
   companyName: string
   profiles: Profile[]
   meId: string | null
-  onAdd: (name: string, drinks: string[]) => void
-  onUpdate: (profileId: string, name: string, drinks: string[]) => void
+  onAdd: (name: string, department: string, drinks: string[]) => void
+  onUpdate: (profileId: string, name: string, department: string, drinks: string[]) => void
   onDelete: (profileId: string) => void
 }
 
+function DeptSelect({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (v: string) => void
+}) {
+  return (
+    <label className="field">
+      <span className="field__label">팀</span>
+      <select className="dept-select" value={value} onChange={(e) => onChange(e.target.value)}>
+        {DEPT_OPTIONS.map((d) => (
+          <option key={d} value={d}>
+            {d}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}
 function DrinkInputs({
   drinks,
   onChange,
@@ -46,9 +76,11 @@ function DrinkInputs({
 
 export function MemberManager({ companyName, profiles, meId, onAdd, onUpdate, onDelete }: Props) {
   const [name, setName] = useState('')
+  const [department, setDepartment] = useState('Development')
   const [drinks, setDrinks] = useState(['', ''])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editName, setEditName] = useState('')
+  const [editDepartment, setEditDepartment] = useState('Development')
   const [editDrinks, setEditDrinks] = useState(['', ''])
   const [formOpen, setFormOpen] = useState(profiles.length === 0)
 
@@ -59,7 +91,7 @@ export function MemberManager({ companyName, profiles, meId, onAdd, onUpdate, on
 
   const handleAdd = () => {
     if (!name.trim() || !drinks[0]?.trim()) return
-    onAdd(name, drinks)
+    onAdd(name, department, drinks)
     resetForm()
     if (profiles.length > 0) setFormOpen(false)
   }
@@ -67,12 +99,13 @@ export function MemberManager({ companyName, profiles, meId, onAdd, onUpdate, on
   const startEdit = (profile: Profile) => {
     setEditingId(profile.id)
     setEditName(profile.name)
+    setEditDepartment(profile.department)
     setEditDrinks([profile.preferredDrinks[0] ?? '', profile.preferredDrinks[1] ?? ''])
   }
 
   const commitEdit = () => {
     if (!editingId || !editName.trim() || !editDrinks[0]?.trim()) return
-    onUpdate(editingId, editName, editDrinks)
+    onUpdate(editingId, editName, editDepartment, editDrinks)
     setEditingId(null)
   }
 
@@ -107,6 +140,7 @@ export function MemberManager({ companyName, profiles, meId, onAdd, onUpdate, on
               onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
             />
           </label>
+          <DeptSelect value={department} onChange={setDepartment} />
           <DrinkInputs drinks={drinks} onChange={setDrinks} />
           <button type="button" className="btn btn--cta btn--block" onClick={handleAdd}>
             <PlusIcon size={16} />
@@ -139,6 +173,7 @@ export function MemberManager({ companyName, profiles, meId, onAdd, onUpdate, on
                       placeholder="이름"
                     />
                   </label>
+                  <DeptSelect value={editDepartment} onChange={setEditDepartment} />
                   <DrinkInputs drinks={editDrinks} onChange={setEditDrinks} />
                   <div className="btn-row">
                     <button type="button" className="btn btn--cta" onClick={commitEdit}>
@@ -157,6 +192,7 @@ export function MemberManager({ companyName, profiles, meId, onAdd, onUpdate, on
                       {profile.name}
                       {profile.id === meId && <span className="me-badge">나</span>}
                     </strong>
+                    <span className="member-card__dept">{profile.department}</span>
                     <div className="drink-tags">
                       {profile.preferredDrinks.map((drink) => (
                         <span key={drink} className="drink-tag">

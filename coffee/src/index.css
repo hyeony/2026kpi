@@ -14,16 +14,18 @@
   --text-on-dark: #f8fafc;
   --text-on-dark-muted: rgba(248, 250, 252, 0.65);
 
-  /* ── Brand (Indigo · Figma B2B SaaS) ── */
-  --primary: #4f46e5;
-  --primary-dark: #4338ca;
-  --primary-light: #eef2ff;
-  --accent: #6366f1;
-  --accent-glow: rgba(99, 102, 241, 0.18);
+  /* ── Brand ── */
+  --primary: #0f172a;
+  --primary-dark: #020617;
+  --primary-light: rgba(64, 252, 141, 0.12);
+  --accent: #40fc8d;
+  --accent-dark: #1a9d5c;
+  --accent-glow: rgba(64, 252, 141, 0.22);
 
   /* ── Actions ── */
-  --cta: #4f46e5;
-  --cta-hover: #4338ca;
+  --cta: #40fc8d;
+  --cta-hover: #2be87a;
+  --cta-text: #0f172a;
 
   /* ── Semantic ── */
   --success: #059669;
@@ -38,8 +40,8 @@
   /* ── Layout ── */
   --nav-bg: #ffffff;
   --nav-text: #64748b;
-  --nav-text-active: #4f46e5;
-  --nav-active-bg: #eef2ff;
+  --nav-text-active: #1a9d5c;
+  --nav-active-bg: rgba(64, 252, 141, 0.15);
   --header-bg: #ffffff;
 
   /* ── Elevation ── */

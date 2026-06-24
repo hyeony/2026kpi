@@ -1,4 +1,4 @@
-import type { AppState, Meeting, Profile } from '../types'
+import type { AppState, Profile } from '../types'
 import { todayString } from './date'
 import {
   GROUP_SEEDS,
@@ -9,6 +9,13 @@ import {
 } from './seedData'
 
 export { SEED_VERSION } from './seedData'
+
+const DEPT_BY_MEMBER = new Map<string, string>()
+for (const group of GROUP_SEEDS) {
+  for (const member of group.members) {
+    DEPT_BY_MEMBER.set(member.id, group.name)
+  }
+}
 
 export function createSeedState(): AppState {
   const today = todayString()
@@ -21,36 +28,27 @@ export function createSeedState(): AppState {
     profiles.push({
       id: member.id,
       name: member.name,
+      department: DEPT_BY_MEMBER.get(member.id) ?? 'Development',
       preferredDrinks: drinksForMember(member),
     })
   }
-
-  const meetings: Meeting[] = GROUP_SEEDS.map((group) => {
-    const memberIds = group.members.map((m) => m.id)
-    const isDevelopment = group.id === 'meeting-development'
-
-    return {
-      id: group.id,
-      name: group.name,
-      memberIds,
-      guests: [],
-      participation: {
-        date: today,
-        memberIds: isDevelopment
-          ? ['profile-jihyun', 'profile-minsu', 'profile-soyeon', 'profile-junho', 'profile-doyoon-k']
-          : [],
-        guestIds: [],
-      },
-    }
-  })
 
   return {
     companyName: 'H9',
     meId: ME_PROFILE_ID,
     profiles,
-    meetings,
-    activeMeetingId: 'meeting-development',
-    activeView: 'order',
+    orderSelection: {
+      date: today,
+      memberIds: [
+        'profile-jihyun',
+        'profile-minsu',
+        'profile-soyeon',
+        'profile-chaerin-y',
+        'profile-kyungho-m',
+      ],
+      guests: [],
+    },
+    activeView: 'home',
     seedVersion: SEED_VERSION,
   }
 }

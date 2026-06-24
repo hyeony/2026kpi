@@ -1,4 +1,4 @@
-import type { ResolvedParticipant } from '../types'
+import type { OrderGuest, Profile } from '../types'
 
 export interface OrderItem {
   memberName: string
@@ -13,21 +13,30 @@ export interface DrinkCount {
 }
 
 export function buildOrderItems(
-  participants: ResolvedParticipant[],
-  participantMemberIds: string[],
-  participantGuestIds: string[],
+  profiles: Profile[],
+  guests: OrderGuest[],
+  selectedMemberIds: string[],
 ): OrderItem[] {
-  const memberSet = new Set(participantMemberIds)
-  const guestSet = new Set(participantGuestIds)
+  const profileMap = new Map(profiles.map((p) => [p.id, p]))
 
-  return participants
-    .filter((p) => (p.kind === 'member' ? memberSet.has(p.id) : guestSet.has(p.id)))
+  const memberItems: OrderItem[] = selectedMemberIds
+    .map((id) => profileMap.get(id))
+    .filter((p): p is Profile => p != null)
     .map((p) => ({
       memberName: p.name,
       drinks: p.preferredDrinks.filter(Boolean),
-      isGuest: p.kind === 'guest',
     }))
     .filter((item) => item.drinks.length > 0)
+
+  const guestItems: OrderItem[] = guests
+    .map((g) => ({
+      memberName: g.name,
+      drinks: g.drinks.filter(Boolean),
+      isGuest: true,
+    }))
+    .filter((item) => item.drinks.length > 0)
+
+  return [...memberItems, ...guestItems]
 }
 
 export function aggregateDrinks(items: OrderItem[]): DrinkCount[] {
@@ -52,7 +61,6 @@ export function aggregateDrinks(items: OrderItem[]): DrinkCount[] {
 }
 
 export function formatOrderMessage(
-  meetingName: string,
   companyName: string,
   items: OrderItem[],
   aggregated: DrinkCount[],
@@ -64,7 +72,7 @@ export function formatOrderMessage(
     weekday: 'short',
   })
 
-  const lines: string[] = [`☕ ${companyName} · ${meetingName} (${date})`, '']
+  const lines: string[] = [`☕ ${companyName} Coffee Shuttle (${date})`, '']
 
   if (items.length === 0) {
     lines.push('참여자가 없습니다.')

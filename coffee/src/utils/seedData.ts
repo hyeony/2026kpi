@@ -1,4 +1,4 @@
-export const SEED_VERSION = 2
+export const SEED_VERSION = 3
 export const ME_PROFILE_ID = 'profile-jihyun'
 
 const DRINK_POOL = [

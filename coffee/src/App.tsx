@@ -1,9 +1,8 @@
 import { MemberManager } from './components/MemberManager'
-import { MeetingSelector } from './components/MeetingSelector'
-import { MeetingsPanel } from './components/MeetingsPanel'
-import { OrderPanel } from './components/OrderPanel'
-import { PreferencesPanel } from './components/PreferencesPanel'
+import { MyPage } from './components/MyPage'
+import { OrgOrderBuilder } from './components/OrgOrderBuilder'
 import { SideNav } from './components/SideNav'
+import { Avatar } from './components/Avatar'
 import { CoffeeIcon } from './components/Icons'
 import { useCoffeeShuttle } from './hooks/useCoffeeShuttle'
 import './App.css'
@@ -11,26 +10,19 @@ import './App.css'
 function App() {
   const {
     state,
-    activeMeeting,
     meProfile,
-    activeParticipants,
+    orderSelection,
     setActiveView,
-    createMeeting,
-    selectMeeting,
-    deleteMeeting,
-    renameMeeting,
+    toggleOrderMember,
+    selectDepartment,
+    clearDepartment,
+    clearOrderSelection,
+    addGuest,
+    removeGuest,
     addProfile,
     updateProfile,
     deleteProfile,
     updateMyPreferences,
-    addMemberToMeeting,
-    removeMemberFromMeeting,
-    addGuestToMeeting,
-    removeGuestFromMeeting,
-    toggleMemberParticipation,
-    toggleGuestParticipation,
-    selectAllParticipation,
-    clearParticipation,
   } = useCoffeeShuttle()
 
   return (
@@ -39,7 +31,6 @@ function App() {
 
       <div className="app-body">
         <header className="hero">
-          <div className="hero__glow" aria-hidden />
           <div className="hero__content">
             <div className="hero__top">
               <div className="hero__brand">
@@ -47,65 +38,39 @@ function App() {
                   <CoffeeIcon size={22} />
                 </span>
                 <div>
-                  <h1>Coffee Runner</h1>
-                  <p>{state.companyName} · 팀 커피 주문, 30초면 끝</p>
+                  <h1>Coffee Shuttle</h1>
+                  <p>{state.companyName}</p>
                 </div>
               </div>
-            </div>
 
-            {state.activeView === 'order' && (
-              <MeetingSelector
-                meetings={state.meetings}
-                activeMeetingId={state.activeMeetingId}
-                onSelect={selectMeeting}
-                onCreate={createMeeting}
-                onDelete={deleteMeeting}
-                onRename={renameMeeting}
-              />
-            )}
+              {meProfile && (
+                <button
+                  type="button"
+                  className={`user-chip${state.activeView === 'mypage' ? ' is-active' : ''}`}
+                  onClick={() => setActiveView('mypage')}
+                >
+                  <Avatar name={meProfile.name} size="sm" />
+                  <span>{meProfile.name}</span>
+                </button>
+              )}
+            </div>
           </div>
         </header>
 
-        <main className="main">
-          {state.activeView === 'order' && (
-            activeMeeting ? (
-              <OrderPanel
-                meetingName={activeMeeting.name}
-                companyName={state.companyName}
-                participants={activeParticipants}
-                participantMemberIds={activeMeeting.participation.memberIds}
-                participantGuestIds={activeMeeting.participation.guestIds}
-                onToggleMember={(id) => toggleMemberParticipation(activeMeeting.id, id)}
-                onToggleGuest={(id) => toggleGuestParticipation(activeMeeting.id, id)}
-                onSelectAll={() => selectAllParticipation(activeMeeting.id)}
-                onClearAll={() => clearParticipation(activeMeeting.id)}
-              />
-            ) : (
-              <div className="welcome">
-                <div className="welcome__visual" aria-hidden>
-                  <span className="welcome__cup">☕</span>
-                  <span className="welcome__steam">~</span>
-                </div>
-                <h2>모임을 선택해 주세요</h2>
-                <p>프로젝트 팀이든 웰컴티든,<br />같이 시키는 그룹을 모임으로 만들어요.</p>
-              </div>
-            )
-          )}
-
-          {state.activeView === 'meetings' && (
-            <MeetingsPanel
+        <main className={`main${state.activeView === 'home' ? ' main--home' : ''}`}>
+          {state.activeView === 'home' && (
+            <OrgOrderBuilder
               companyName={state.companyName}
-              meetings={state.meetings}
               profiles={state.profiles}
-              activeMeetingId={state.activeMeetingId}
-              onSelect={selectMeeting}
-              onCreate={createMeeting}
-              onDelete={deleteMeeting}
-              onRename={renameMeeting}
-              onAddMember={addMemberToMeeting}
-              onRemoveMember={removeMemberFromMeeting}
-              onAddGuest={addGuestToMeeting}
-              onRemoveGuest={removeGuestFromMeeting}
+              meId={state.meId}
+              selectedMemberIds={orderSelection.memberIds}
+              guests={orderSelection.guests}
+              onToggleMember={toggleOrderMember}
+              onSelectDepartment={selectDepartment}
+              onClearDepartment={clearDepartment}
+              onClearAll={clearOrderSelection}
+              onAddGuest={addGuest}
+              onRemoveGuest={removeGuest}
             />
           )}
 
@@ -120,8 +85,12 @@ function App() {
             />
           )}
 
-          {state.activeView === 'preferences' && meProfile && (
-            <PreferencesPanel profile={meProfile} onSave={updateMyPreferences} />
+          {state.activeView === 'mypage' && meProfile && (
+            <MyPage
+              profile={meProfile}
+              companyName={state.companyName}
+              onSave={updateMyPreferences}
+            />
           )}
         </main>
       </div>
