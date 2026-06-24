@@ -1,0 +1,162 @@
+.wrapper {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.75rem 1.5rem;
+  min-height: 320px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.spinnerRing {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.headerText {
+  flex: 1;
+  min-width: 0;
+}
+
+.currentStep {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text);
+  margin-bottom: 0.375rem;
+}
+
+.stepPulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  animation: pulse 1.2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.subHint {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.stepList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: #f8fafc;
+  border: 1px solid transparent;
+  transition: background 0.25s, border-color 0.25s, opacity 0.25s;
+  opacity: 0.55;
+}
+
+.stepItem.current {
+  opacity: 1;
+  background: var(--color-primary-light);
+  border-color: #c7d2fe;
+}
+
+.stepItem.done {
+  opacity: 0.85;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.stepIcon {
+  width: 1.25rem;
+  text-align: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.stepItem.current .stepIcon {
+  color: var(--color-primary);
+}
+
+.stepItem.done .stepIcon {
+  color: var(--color-good);
+  font-weight: 700;
+}
+
+.stepLabel {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.stepStatus {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.stepStatusDone {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-good);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
+}
+
+@media (min-width: 768px) {
+  .wrapper {
+    padding: 2rem;
+  }
+
+  .currentStep {
+    font-size: 1.0625rem;
+  }
+}

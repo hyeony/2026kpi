@@ -1,39 +1,114 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import FileUploader from './components/FileUploader';
 import ScoreCard from './components/ScoreCard';
 import RiskCard from './components/RiskCard';
 import MissingStateList from './components/MissingStateList';
 import QuestionList from './components/QuestionList';
 import QAChecklist from './components/QAChecklist';
+import ComponentSpecList from './components/ComponentSpecList';
+import DevPerspectiveList from './components/DevPerspectiveList';
+import HandoffProgress from './components/HandoffProgress';
+import SectionNav, { type ResultSection } from './components/SectionNav';
+import ResultPreviewSkeleton from './components/ResultPreviewSkeleton';
+import AnalysisLoadingState, { ANALYSIS_DURATION_MS } from './components/AnalysisLoadingState';
 import {
   mockReviewData,
   formatReviewAsText,
+  calcHandoffProgress,
+  type QuestionAnswer,
+  type ReviewQuestion,
   type ReviewResult,
 } from './data/mockReview';
 import './App.css';
 
-const ANALYZE_DELAY_MS = 1500;
+function initQuestionAnswers(questions: ReviewQuestion[]): Record<string, QuestionAnswer> {
+  return Object.fromEntries(
+    questions.map((q) => [q.id, { answer: '', status: 'open' as const }]),
+  );
+}
 
 export default function App() {
   const [file, setFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<ReviewResult | null>(null);
+  const [extraQuestions, setExtraQuestions] = useState<ReviewQuestion[]>([]);
+  const [questionAnswers, setQuestionAnswers] = useState<Record<string, QuestionAnswer>>({});
+  const [qaChecked, setQaChecked] = useState<boolean[]>([]);
+  const [activeSection, setActiveSection] = useState<ResultSection>('diagnosis');
   const [copyFeedback, setCopyFeedback] = useState('');
+
+  const allQuestions = useMemo(
+    () => (result ? [...result.questions, ...extraQuestions] : []),
+    [result, extraQuestions],
+  );
+
+  const handoffProgress = useMemo(
+    () => calcHandoffProgress(allQuestions, questionAnswers, qaChecked),
+    [allQuestions, questionAnswers, qaChecked],
+  );
+
+  const resolvedCount = useMemo(
+    () =>
+      allQuestions.filter(
+        (q) =>
+          questionAnswers[q.id]?.status === 'resolved' ||
+          questionAnswers[q.id]?.status === 'ask-dev',
+      ).length,
+    [allQuestions, questionAnswers],
+  );
+
+  const checkedQACount = useMemo(() => qaChecked.filter(Boolean).length, [qaChecked]);
 
   const runAnalysis = useCallback(() => {
     setIsAnalyzing(true);
     setResult(null);
+    setExtraQuestions([]);
+    setActiveSection('diagnosis');
 
     setTimeout(() => {
       setResult(mockReviewData);
+      setQuestionAnswers(initQuestionAnswers(mockReviewData.questions));
+      setQaChecked(mockReviewData.qaChecklist.map(() => false));
       setIsAnalyzing(false);
-    }, ANALYZE_DELAY_MS);
+    }, ANALYSIS_DURATION_MS);
   }, []);
+
+  const handleAnswerChange = (id: string, update: Partial<QuestionAnswer>) => {
+    setQuestionAnswers((prev) => ({
+      ...prev,
+      [id]: { ...prev[id], ...update },
+    }));
+  };
+
+  const handleAddQuestion = (question: string) => {
+    const id = `custom-${Date.now()}`;
+    const newQ: ReviewQuestion = {
+      id,
+      category: 'interaction',
+      question,
+      hint: '직접 추가한 질문입니다.',
+    };
+    setExtraQuestions((prev) => [...prev, newQ]);
+    setQuestionAnswers((prev) => ({
+      ...prev,
+      [id]: { answer: '', status: 'open' },
+    }));
+  };
+
+  const handleQAToggle = (index: number) => {
+    setQaChecked((prev) => {
+      const next = [...prev];
+      next[index] = !next[index];
+      return next;
+    });
+  };
 
   const handleCopy = async () => {
     if (!result) return;
     try {
-      await navigator.clipboard.writeText(formatReviewAsText(result));
+      await navigator.clipboard.writeText(
+        formatReviewAsText(result, questionAnswers, qaChecked),
+      );
       setCopyFeedback('복사됨!');
       setTimeout(() => setCopyFeedback(''), 2000);
     } catch {
@@ -50,7 +125,7 @@ export default function App() {
             <span className="logo-icon">◈</span>
             <div>
               <h1>AI Spec Reviewer</h1>
-              <p>디자인 스펙을 프론트엔드 개발자 관점에서 리뷰합니다</p>
+              <p>개발자에게 넘기기 전, 디자인 스펙을 함께 점검하는 핸드오프 어시스턴트</p>
             </div>
           </div>
         </div>
@@ -68,40 +143,61 @@ export default function App() {
         </aside>
 
         <section className="results">
-          {isAnalyzing && (
-            <div className="loading-state">
-              <div className="spinner" />
-              <p>스펙을 분석하고 있습니다...</p>
-              <span className="loading-hint">구현 리스크와 누락 상태를 점검 중</span>
-            </div>
-          )}
+          {isAnalyzing && <AnalysisLoadingState isActive={isAnalyzing} />}
 
-          {!isAnalyzing && !result && (
-            <div className="empty-state">
-              <span className="empty-icon">📋</span>
-              <h2>분석 결과가 여기에 표시됩니다</h2>
-              <p>디자인 파일을 업로드하고 분석하기를 누르거나, 샘플 분석을 실행해보세요.</p>
-            </div>
-          )}
+          {!isAnalyzing && !result && <ResultPreviewSkeleton />}
 
           {!isAnalyzing && result && (
             <div className="results-content">
               <div className="results-toolbar">
                 <h2>분석 결과</h2>
                 <button type="button" className="copy-btn" onClick={handleCopy}>
-                  {copyFeedback || '결과 복사'}
+                  {copyFeedback || '핸드오프 문서 복사'}
                 </button>
               </div>
 
-              <ScoreCard score={result.score} summary={result.summary} />
-              <RiskCard risks={result.risks} />
+              <HandoffProgress
+                progress={handoffProgress}
+                resolvedQuestions={resolvedCount}
+                totalQuestions={allQuestions.length}
+                checkedQA={checkedQACount}
+                totalQA={qaChecked.length}
+              />
 
-              <div className="grid-two">
-                <MissingStateList states={result.missingStates} />
-                <QuestionList questions={result.questions} />
-              </div>
+              <SectionNav active={activeSection} onChange={setActiveSection} />
 
-              <QAChecklist items={result.qaChecklist} />
+              {activeSection === 'diagnosis' && (
+                <div className="section-panel">
+                  <ScoreCard score={result.score} summary={result.summary} />
+                  <RiskCard risks={result.risks} />
+                  <MissingStateList states={result.missingStates} />
+                </div>
+              )}
+
+              {activeSection === 'dev-spec' && (
+                <div className="section-panel">
+                  <ComponentSpecList specs={result.componentSpecs} />
+                  <DevPerspectiveList perspectives={result.devPerspectives} />
+                </div>
+              )}
+
+              {activeSection === 'handoff' && (
+                <div className="section-panel">
+                  <div className="grid-two">
+                    <QuestionList
+                      questions={allQuestions}
+                      answers={questionAnswers}
+                      onAnswerChange={handleAnswerChange}
+                      onAddQuestion={handleAddQuestion}
+                    />
+                    <QAChecklist
+                      items={result.qaChecklist}
+                      checked={qaChecked}
+                      onToggle={handleQAToggle}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </section>

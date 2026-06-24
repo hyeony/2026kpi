@@ -101,6 +101,52 @@
   color: var(--color-critical);
 }
 
+.aiInfo {
+  margin-top: 1rem;
+  padding: 0.875rem 1rem;
+  background: #f8fafc;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.aiTiming {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.625rem;
+}
+
+.aiIcon {
+  color: var(--color-primary);
+  font-size: 0.75rem;
+}
+
+.featureList {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.375rem 0.75rem;
+}
+
+.featureList li {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  padding-left: 1.125rem;
+  position: relative;
+}
+
+.featureList li::before {
+  content: '✔';
+  position: absolute;
+  left: 0;
+  color: var(--color-good);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
 .actions {
   display: flex;
   gap: 0.75rem;

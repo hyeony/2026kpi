@@ -64,8 +64,10 @@ export default function FileUploader({
 
   return (
     <div className={styles.card}>
-      <h2 className={styles.title}>디자인 파일 업로드</h2>
-      <p className={styles.subtitle}>이미지 또는 PDF를 드래그하거나 선택하세요</p>
+      <h2 className={styles.title}>디자인 스펙 업로드</h2>
+      <p className={styles.subtitle}>
+        Figma export, 화면 캡처, PDF 등을 올리면 개발 핸드오프 전 점검 항목을 생성합니다
+      </p>
 
       <div
         className={`${styles.dropzone} ${isDragging ? styles.dragging : ''} ${file ? styles.hasFile : ''}`}
@@ -102,6 +104,19 @@ export default function FileUploader({
       </div>
 
       {error && <p className={styles.error}>{error}</p>}
+
+      <div className={styles.aiInfo}>
+        <p className={styles.aiTiming}>
+          <span className={styles.aiIcon} aria-hidden="true">✦</span>
+          AI가 평균 15초 내에 분석합니다
+        </p>
+        <ul className={styles.featureList}>
+          <li>구현 리스크·누락 상태</li>
+          <li>컴포넌트별 Props 가이드</li>
+          <li>말줄임·Empty 등 엣지 케이스</li>
+          <li>개발자 확인 질문·QA</li>
+        </ul>
+      </div>
 
       <div className={styles.actions}>
         {file && (

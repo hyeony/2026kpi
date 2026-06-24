@@ -1,0 +1,83 @@
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.875rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  max-width: 420px;
+}
+
+.scoreWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.score {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-fair);
+  letter-spacing: -0.03em;
+}
+
+.score.ready {
+  color: var(--color-good);
+}
+
+.badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-good);
+  background: #ecfdf5;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+}
+
+.barTrack {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.barFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #7c3aed);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.stats strong {
+  color: var(--color-text);
+}
