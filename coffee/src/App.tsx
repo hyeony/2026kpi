@@ -44,7 +44,11 @@ function App() {
           <div className="hero__content">
             <div className="hero__top">
               <div className="hero__brand">
-                <span className="hero__logo">
+                <span className="hero__logo hero__logo--animated">
+                  <span className="hero__logo-steam" aria-hidden>
+                    <span />
+                    <span />
+                  </span>
                   <CoffeeIcon size={22} />
                 </span>
                 <div>

@@ -25,7 +25,11 @@ export function BottomNav({ active, onChange }: Props) {
                 onClick={() => onChange(item.id)}
                 aria-current={isActive ? 'page' : undefined}
               >
-                <item.Icon size={22} />
+                <span
+                  className={`bottom-nav__icon${isActive && item.id === 'home' ? ' bottom-nav__icon--steam' : ''}`}
+                >
+                  <item.Icon size={22} />
+                </span>
                 <span>{item.label}</span>
               </button>
             </li>

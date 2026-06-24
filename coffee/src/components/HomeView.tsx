@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { OrderGuest, Profile } from '../types'
 import {
   analyzeSelection,
@@ -52,6 +52,7 @@ export function HomeView({
   const [manualOpen, setManualOpen] = useState(false)
   const [copied, setCopied] = useState(false)
   const [showMessage, setShowMessage] = useState(false)
+  const [dockBump, setDockBump] = useState(false)
 
   const orderItems = useMemo(
     () => buildOrderItems(profiles, guests, selectedMemberIds),
@@ -64,6 +65,7 @@ export function HomeView({
   )
   const total = aggregated.reduce((sum, d) => sum + d.count, 0)
   const selectedCount = selectedMemberIds.length + guests.length
+  const prevTotal = useRef(total)
 
   const selectedProfiles = useMemo(
     () =>
@@ -80,6 +82,15 @@ export function HomeView({
     }
     setInsight(analyzeSelection(profiles, selectedMemberIds))
   }, [profiles, selectedMemberIds])
+
+  useEffect(() => {
+    if (prevTotal.current === total) return
+    prevTotal.current = total
+    if (total === 0) return
+    setDockBump(true)
+    const timer = window.setTimeout(() => setDockBump(false), 450)
+    return () => window.clearTimeout(timer)
+  }, [total])
 
   const handleAiSubmit = useCallback(
     async (text: string) => {
@@ -102,7 +113,7 @@ export function HomeView({
     (memberIds: string[], label: string) => {
       onApplySelection(memberIds, label)
       setGroupLabel(label)
-      setLastReply(`⭐ ${label} 구성을 불러왔어요.`)
+      setLastReply(`⭐ ${label} 주문 목록을 불러왔어요.`)
       setInsight(analyzeSelection(profiles, memberIds))
     },
     [onApplySelection, profiles],
@@ -135,22 +146,60 @@ export function HomeView({
 
       <QuickPickPanel onApplyMemberIds={handleQuickPick} />
 
+      {selectedCount === 0 && (
+        <div className="welcome card">
+          <div className="welcome__visual">
+            <span className="welcome__steam" aria-hidden>
+              <span />
+              <span />
+              <span />
+            </span>
+            <span className="welcome__cup" aria-hidden>
+              ☕
+            </span>
+          </div>
+          <h2>팀 커피 주문, 헷갈리지 않게</h2>
+          <p>구성원별 음료 취향이 저장되어 있어요. 팀만 고르면 주문 문구가 자동으로 완성돼요.</p>
+          <ol className="welcome__steps">
+            <li>
+              <span>1</span> 주문할 사람·팀 선택
+            </li>
+            <li>
+              <span>2</span> 저장된 취향으로 음료 자동 채우기
+            </li>
+            <li>
+              <span>3</span> 주문 문구 복사해서 전달
+            </li>
+          </ol>
+        </div>
+      )}
+
       {insight && selectedCount > 0 && (
         <AiInsightCard insight={insight} groupLabel={groupLabel} />
       )}
 
       {selectedCount > 0 && (
         <div className="selected-strip card">
-          <span className="card-label">이번에 함께하는 사람 · {selectedCount}명</span>
+          <span className="card-label">이번 주문 · {selectedCount}명</span>
           <div className="selected-strip__avatars">
-            {selectedProfiles.map((p) => (
-              <div key={p.id} className="selected-strip__person" title={p.name}>
+            {selectedProfiles.map((p, i) => (
+              <div
+                key={p.id}
+                className="selected-strip__person"
+                title={p.name}
+                style={{ animationDelay: `${i * 55}ms` }}
+              >
                 <Avatar name={p.name} size="sm" />
                 <span>{p.name}</span>
               </div>
             ))}
-            {guests.map((g) => (
-              <div key={g.id} className="selected-strip__person" title={g.name}>
+            {guests.map((g, i) => (
+              <div
+                key={g.id}
+                className="selected-strip__person"
+                title={g.name}
+                style={{ animationDelay: `${(selectedProfiles.length + i) * 55}ms` }}
+              >
                 <Avatar name={g.name} size="sm" />
                 <span>{g.name}</span>
               </div>
@@ -167,7 +216,7 @@ export function HomeView({
           aria-expanded={manualOpen}
         >
           {manualOpen ? '직접 선택 접기' : '직접 선택하기'}
-          <span className="manual-section__hint">조직도에서 수정</span>
+          <span className="manual-section__hint">조직도에서 고르기</span>
         </button>
         {manualOpen && (
           <OrgOrderBuilder
@@ -189,8 +238,23 @@ export function HomeView({
         <div className="order-dock is-visible">
           <div className="order-dock__inner">
             <div className="order-dock__top">
-              <div className="order-dock__meta">
-                <strong>{selectedCount}명 · {total}잔</strong>
+              <div
+                className={[
+                  'order-dock__meta',
+                  dockBump ? 'is-bump' : '',
+                  total >= 5 ? 'is-crowded' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+              >
+                <strong>
+                  {selectedCount}명 · {total}잔
+                  {total >= 5 && (
+                    <span className="order-dock__crowd-badge" aria-hidden>
+                      ☕
+                    </span>
+                  )}
+                </strong>
                 {aggregated.length > 0 && (
                   <p className="order-dock__drinks">
                     {aggregated

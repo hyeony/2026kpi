@@ -58,8 +58,8 @@ export function OrgOrderBuilder({
     <div className={`org-order${embedded ? ' org-order--embedded' : ''}`}>
       {!embedded && (
         <div className="org-order__intro">
-          <h2 className="panel__title">누구랑 시킬까요?</h2>
-          <p className="panel__desc">팀 조직도에서 선택하면 주문 그룹이 만들어져요</p>
+          <h2 className="panel__title">주문 대상 선택</h2>
+          <p className="panel__desc">고르면 각자 저장된 취향이 주문에 반영돼요</p>
         </div>
       )}
 

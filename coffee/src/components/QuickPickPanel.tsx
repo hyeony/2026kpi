@@ -31,10 +31,11 @@ export function QuickPickPanel({ onApplyMemberIds }: Props) {
           type="button"
           role="tab"
           aria-selected={tab === 'favorite'}
-          className={`quick-pick__tab${tab === 'favorite' ? ' is-active' : ''}`}
+          className={`quick-pick__tab${tab === 'favorite' ? ' is-active is-sparkle' : ''}`}
           onClick={() => setTab('favorite')}
         >
           즐겨찾기
+          {tab === 'favorite' && <span className="quick-pick__tab-spark" aria-hidden>⭐</span>}
         </button>
         <button
           type="button"
@@ -105,7 +106,7 @@ function FavoriteRow({
   onSelect: () => void
 }) {
   return (
-    <button type="button" className="favorite-row" onClick={onSelect}>
+    <button type="button" className="favorite-row favorite-row--tap" onClick={onSelect}>
       <div>
         <strong>{group.name}</strong>
         <span>{group.tag ?? `${group.memberIds.length}명`}</span>

@@ -29,7 +29,9 @@ export function ProfileDrawer({ profile, onClose, onSave }: Props) {
         <div className="drawer-sheet__handle" aria-hidden />
         <div className="drawer-sheet__head">
           <div className="drawer-sheet__profile">
-            <Avatar name={profile.name} size="sm" />
+            <span className="drawer-sheet__avatar">
+              <Avatar name={profile.name} size="sm" />
+            </span>
             <div>
               <strong>{profile.name}</strong>
               <span>{profile.department}</span>

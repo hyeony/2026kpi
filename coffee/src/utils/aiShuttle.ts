@@ -24,8 +24,8 @@ export interface AiCommandResult {
 }
 
 export const AI_SUGGESTIONS = [
-  '오늘 FE팀 주문 만들어줘',
-  '디자인팀 포함해줘',
+  'FE팀 주문 목록 만들어줘',
+  '디자인팀 전원 추가',
   '지난주랑 동일하게',
 ] as const
 
@@ -188,7 +188,7 @@ export async function processAiCommand(
     return {
       memberIds: valid,
       groupLabel: '지난주 주문',
-      reply: `지난주 ${valid.length}명 구성으로 맞췄어요. 음료는 저장된 취향 기준으로 채울게요.`,
+      reply: `지난주 ${valid.length}명 주문 목록으로 맞췄어요. 음료는 저장된 취향 기준으로 채울게요.`,
       insight: buildInsight(profiles, valid, '지난주에 함께 주문했던 패턴'),
     }
   }
@@ -211,7 +211,7 @@ export async function processAiCommand(
     return {
       memberIds: ids,
       groupLabel: label,
-      reply: `${label} ${ids.length}명으로 오늘 주문 그룹을 만들었어요.`,
+      reply: `${label} ${ids.length}명 주문 목록을 만들었어요.`,
       insight: buildInsight(profiles, ids, `${label} 최근 스프린트 주문 이력`),
     }
   }
@@ -224,7 +224,7 @@ export async function processAiCommand(
     return {
       memberIds: valid,
       groupLabel: favorite.name,
-      reply: `⭐ ${favorite.name} 그룹 ${valid.length}명을 불러왔어요.`,
+      reply: `⭐ ${favorite.name} 주문 목록 ${valid.length}명을 불러왔어요.`,
       insight: buildInsight(profiles, valid, `${favorite.name} 즐겨찾기 그룹`),
     }
   }
