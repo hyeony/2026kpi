@@ -85,7 +85,7 @@ export function formatOrderMessage(
     weekday: 'short',
   })
 
-  const lines: string[] = [`☕ ${companyName} Coffee Shuttle (${date})`, '']
+  const lines: string[] = [`☕ ${companyName} CUPPIN (${date})`, '']
 
   if (items.length === 0) {
     lines.push('참여자가 없습니다.')

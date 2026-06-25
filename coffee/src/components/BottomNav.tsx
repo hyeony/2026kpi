@@ -26,9 +26,13 @@ export function BottomNav({ active, onChange }: Props) {
                 aria-current={isActive ? 'page' : undefined}
               >
                 <span
-                  className={`bottom-nav__icon${isActive && item.id === 'home' ? ' bottom-nav__icon--steam' : ''}`}
+                  className={`bottom-nav__icon${isActive && item.id === 'home' ? ' bottom-nav__icon--ice' : ''}`}
                 >
-                  <item.Icon size={22} />
+                  {item.id === 'home' ? (
+                    <CoffeeIcon size={22} animated={isActive} />
+                  ) : (
+                    <item.Icon size={22} />
+                  )}
                 </span>
                 <span>{item.label}</span>
               </button>

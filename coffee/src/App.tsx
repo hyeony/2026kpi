@@ -45,15 +45,11 @@ function App() {
             <div className="hero__top">
               <div className="hero__brand">
                 <span className="hero__logo hero__logo--animated">
-                  <span className="hero__logo-steam" aria-hidden>
-                    <span />
-                    <span />
-                  </span>
-                  <CoffeeIcon size={22} />
+                  <CoffeeIcon size={22} animated />
                 </span>
                 <div>
-                  <h1>Coffee Shuttle</h1>
-                  <p>{state.companyName}</p>
+                  <h1>CUPPIN</h1>
+                  <p className="hero__slogan">{state.companyName}, 커피 모여! ☕</p>
                 </div>
               </div>
 

@@ -320,6 +320,61 @@ em {
   }
 }
 
+@keyframes iceBob {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-1.2px) rotate(-4deg);
+  }
+}
+
+@keyframes bubbleRise {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  25% {
+    opacity: 0.45;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-3.5px);
+  }
+}
+
+@keyframes liquidShimmer {
+  0%, 100% {
+    opacity: 0.28;
+  }
+  50% {
+    opacity: 0.38;
+  }
+}
+
+@keyframes strawSway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes condenseDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
 @keyframes checkPop {
   0% {
     transform: scale(0.6);

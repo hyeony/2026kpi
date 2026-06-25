@@ -1,17 +1,74 @@
-type IconProps = { size?: number; className?: string }
+type IconProps = { size?: number; className?: string; animated?: boolean }
 
-export function CoffeeIcon({ size = 20, className }: IconProps) {
+export function CoffeeIcon({ size = 20, className, animated = false }: IconProps) {
+  const iceClass = (slot: string) => (animated ? `iced-icon__ice iced-icon__ice--${slot}` : undefined)
+
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      className={[className, animated ? 'iced-icon' : ''].filter(Boolean).join(' ')}
+      aria-hidden
+    >
       <path
-        d="M6 8h11a3 3 0 0 1 0 6H6V8Z"
+        d="M15.2 3.8l1.8 1.2"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        className={animated ? 'iced-icon__straw' : undefined}
+      />
+      <path
+        d="M15.6 5.2L14.4 12.5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        opacity="0.65"
+        className={animated ? 'iced-icon__straw' : undefined}
+      />
+      <path
+        d="M8.2 7h7.6l-.9 12.2H9.1L8.2 7Z"
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinejoin="round"
       />
-      <path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      <path d="M6 14v2.5A2.5 2.5 0 0 0 8.5 19h5A2.5 2.5 0 0 0 16 16.5V14" stroke="currentColor" strokeWidth="1.8" />
-      <path d="M9 5V7M12 4V7M15 5V7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path
+        d="M8.4 14.2h7.2v4.1c0 .55-.45 1-1 1H9.4c-.55 0-1-.45-1-1v-4.1Z"
+        fill="currentColor"
+        opacity="0.28"
+        className={animated ? 'iced-icon__liquid' : undefined}
+      />
+      <rect
+        x="9.3"
+        y="9.8"
+        width="2.7"
+        height="2.7"
+        rx="0.55"
+        fill="currentColor"
+        opacity="0.18"
+        stroke="currentColor"
+        strokeWidth="0.9"
+        className={iceClass('1')}
+      />
+      <rect
+        x="12.7"
+        y="10.8"
+        width="2.4"
+        height="2.4"
+        rx="0.5"
+        fill="currentColor"
+        opacity="0.14"
+        stroke="currentColor"
+        strokeWidth="0.9"
+        className={iceClass('2')}
+      />
+      {animated && (
+        <>
+          <circle cx="10.8" cy="16.8" r="0.55" fill="currentColor" opacity="0.35" className="iced-icon__bubble iced-icon__bubble--1" />
+          <circle cx="13.4" cy="17.4" r="0.45" fill="currentColor" opacity="0.3" className="iced-icon__bubble iced-icon__bubble--2" />
+        </>
+      )}
     </svg>
   )
 }
