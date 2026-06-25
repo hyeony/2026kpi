@@ -158,17 +158,17 @@ export function HomeView({
               ☕
             </span>
           </div>
-          <h2>팀 커피 주문, 헷갈리지 않게</h2>
-          <p>구성원별 음료 취향이 저장되어 있어요. 팀만 고르면 주문 문구가 자동으로 완성돼요.</p>
+          <h2>취향은 기억하고, 주문은 자동으로.</h2>
+          <p>구성원별 음료 취향을 저장해 두고, 주문할 사람만 선택하면 주문 문구가 자동으로 완성돼요.</p>
           <ol className="welcome__steps">
             <li>
-              <span>1</span> 주문할 사람·팀 선택
+              <span>1</span> 주문할 사람 선택
             </li>
             <li>
               <span>2</span> 저장된 취향으로 음료 자동 채우기
             </li>
             <li>
-              <span>3</span> 주문 문구 복사해서 전달
+              <span>3</span> 복사해서 전달
             </li>
           </ol>
         </div>
