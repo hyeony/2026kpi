@@ -9,7 +9,7 @@ export const PROFILE_AI_SEED: Record<
   [ME_PROFILE_ID]: {
     tasteTags: ['디카페인', '산미 선호', '얼음 적게'],
     aiNotes:
-      '산미 있는 아메리카노를 좋아해요. 디카페인만 마시고, 카페인은 오후 3시 이후엔 피해요. 라떼도 좋아하지만 우유는 적게 넣어주세요.',
+      '산미 있는 아메리카노를 좋아해요. 카페인은 오후 3시 이후엔 피해요. 라떼도 좋아하지만 우유는 적게 넣어주세요.',
   },
   'profile-minsu': {
     tasteTags: ['샷 추가', 'ICE'],
