@@ -49,7 +49,7 @@ function App() {
                 </span>
                 <div>
                   <h1>CUPPIN</h1>
-                  <p className="hero__slogan">{state.companyName}, 커피 모여! ☕</p>
+                  <p className="hero__slogan">에이치나이너의 커피 주문을 더 간편하게</p>
                 </div>
               </div>
 

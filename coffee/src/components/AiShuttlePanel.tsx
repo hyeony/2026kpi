@@ -36,8 +36,8 @@ export function AiShuttlePanel({ onSubmit, isThinking, lastReply }: Props) {
           ☕
         </span>
         <div>
-          <p className="ai-shuttle__title">팀원 취향을 모아 한 번에</p>
-          <h2 className="ai-shuttle__question">오늘 누구 커피 시킬까?</h2>
+          <p className="ai-shuttle__title">H9 커피 모여! ☕</p>
+          <h2 className="ai-shuttle__question">오늘 누구와 커피 마실까요?</h2>
         </div>
       </div>
 
