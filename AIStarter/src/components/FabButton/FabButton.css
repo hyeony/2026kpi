@@ -1,0 +1,118 @@
+.fab-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: var(--text-label);
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-default),
+    transform var(--duration-fast) var(--ease-default),
+    box-shadow var(--duration-fast) var(--ease-default),
+    opacity var(--duration-fast) var(--ease-default);
+}
+
+.fab-button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.fab-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.fab-button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.fab-button:not(:disabled):active {
+  transform: scale(0.96);
+}
+
+.fab-button--md {
+  width: 48px;
+  height: 48px;
+}
+
+.fab-button--lg {
+  width: 56px;
+  height: 56px;
+}
+
+.fab-button--extended.fab-button--md {
+  width: auto;
+  height: 48px;
+  padding: 0 var(--space-5);
+}
+
+.fab-button--extended.fab-button--lg {
+  width: auto;
+  height: 56px;
+  padding: 0 var(--space-6);
+}
+
+.fab-button--primary {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: var(--shadow-fab);
+}
+
+.fab-button--primary:not(:disabled):hover {
+  background: var(--color-primary-hover);
+}
+
+.fab-button--secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+}
+
+.fab-button--secondary:not(:disabled):hover {
+  background: var(--color-surface-2);
+}
+
+.fab-button--danger {
+  background: var(--color-danger);
+  color: #fff;
+  box-shadow: 0 6px 20px rgb(220 38 38 / 30%);
+}
+
+.fab-button--danger:not(:disabled):hover {
+  background: #b91c1c;
+}
+
+.fab-button__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fab-button__label {
+  white-space: nowrap;
+}
+
+.fab-button--fixed {
+  position: fixed;
+  z-index: 100;
+  bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  right: var(--space-6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fab-button {
+    transition: none;
+  }
+
+  .fab-button:not(:disabled):hover {
+    transform: none;
+  }
+}
