@@ -1,0 +1,1 @@
+const a={parameters:{controls:{matchers:{color:/(background|color)$/i,date:/Date$/i}},backgrounds:{default:"surface",values:[{name:"surface",value:"#f9fafb"},{name:"white",value:"#ffffff"}]}}};export{a as default};
