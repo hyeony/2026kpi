@@ -1,0 +1,46 @@
+.feedback-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.feedback-actions__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-default),
+    color var(--duration-fast) var(--ease-default);
+}
+
+.feedback-actions__button:hover:not(:disabled) {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+.feedback-actions__button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.feedback-actions__button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.feedback-actions__button--active {
+  color: var(--color-primary);
+  background: #eff6ff;
+}
+
+.feedback-actions__button--success {
+  color: var(--color-success);
+}

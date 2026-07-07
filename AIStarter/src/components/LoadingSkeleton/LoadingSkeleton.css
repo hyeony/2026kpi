@@ -1,0 +1,71 @@
+.loading-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.loading-skeleton__line,
+.loading-skeleton__card,
+.loading-skeleton__bubble {
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+}
+
+.loading-skeleton__line {
+  height: 14px;
+}
+
+.loading-skeleton__card {
+  width: 100%;
+  height: 120px;
+  border-radius: var(--radius-lg);
+}
+
+.loading-skeleton--conversation {
+  gap: var(--space-5);
+  max-width: 640px;
+}
+
+.loading-skeleton__bubble {
+  height: 48px;
+  border-radius: var(--radius-lg);
+}
+
+.loading-skeleton__bubble--user {
+  width: 55%;
+  align-self: flex-end;
+}
+
+.loading-skeleton__bubble--assistant {
+  width: 75%;
+  align-self: flex-start;
+}
+
+.loading-skeleton__bubble--short {
+  width: 45%;
+}
+
+.loading-skeleton--animated .loading-skeleton__line,
+.loading-skeleton--animated .loading-skeleton__card,
+.loading-skeleton--animated .loading-skeleton__bubble {
+  animation: loading-skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loading-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-skeleton--animated .loading-skeleton__line,
+  .loading-skeleton--animated .loading-skeleton__card,
+  .loading-skeleton--animated .loading-skeleton__bubble {
+    animation: none;
+  }
+}
